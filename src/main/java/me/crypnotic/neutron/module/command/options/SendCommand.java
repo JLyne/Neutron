@@ -39,7 +39,7 @@ import me.crypnotic.neutron.api.locale.LocaleMessage;
 public class SendCommand extends CommandWrapper {
 
     @Override
-    public void handle(CommandSource source, CommandContext context) throws CommandExitException {
+    public void handle(CommandSource source, CommandContext context) {
         assertPermission(source, "neutron.command.send");
         assertUsage(source, context.size() > 1);
 

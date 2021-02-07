@@ -42,7 +42,7 @@ import net.kyori.adventure.text.event.HoverEvent;
 public class GlistCommand extends CommandWrapper {
 
     @Override
-    public void handle(CommandSource source, CommandContext context) throws CommandExitException {
+    public void handle(CommandSource source, CommandContext context) {
         assertPermission(source, "neutron.command.glist");
 
         message(source, LocaleMessage.LIST_HEADER, getNeutron().getProxy().getPlayerCount());

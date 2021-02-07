@@ -24,8 +24,6 @@
 */
 package me.crypnotic.neutron.api.command;
 
-import java.util.Optional;
-
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.command.SimpleCommand;
 import com.velocitypowered.api.proxy.Player;
@@ -36,7 +34,6 @@ import lombok.SneakyThrows;
 import me.crypnotic.neutron.NeutronPlugin;
 import me.crypnotic.neutron.api.Neutron;
 import me.crypnotic.neutron.api.locale.LocaleMessage;
-import me.crypnotic.neutron.api.user.User;
 import me.crypnotic.neutron.util.StringHelper;
 import net.kyori.adventure.text.Component;
 
@@ -98,10 +95,6 @@ public abstract class CommandWrapper implements SimpleCommand {
 
     public Component getMessage(CommandSource source, LocaleMessage message, Object... values) {
         return StringHelper.getMessage(source, message, values);
-    }
-
-    public Optional<User<? extends CommandSource>> getUser(CommandSource source) {
-        return getNeutron().getUserManager().getUser(source);
     }
 
     public abstract void handle(CommandSource source, CommandContext context) throws CommandExitException;

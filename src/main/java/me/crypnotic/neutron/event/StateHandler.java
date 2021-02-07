@@ -39,21 +39,18 @@ public class StateHandler {
 
     public void init() {
         init(neutron.getLocaleManager());
-        init(neutron.getUserManager());
         init(neutron.getModuleManager());
     }
 
     @Subscribe
     public void onProxyReload(ProxyReloadEvent event) {
         reload(neutron.getLocaleManager());
-        reload(neutron.getUserManager());
         reload(neutron.getModuleManager());
     }
 
     @Subscribe
     public void onProxyShutdown(ProxyShutdownEvent event) {
         shutdown(neutron.getLocaleManager());
-        shutdown(neutron.getUserManager());
         shutdown(neutron.getModuleManager());
     }
 

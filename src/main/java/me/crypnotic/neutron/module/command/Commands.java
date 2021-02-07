@@ -33,12 +33,9 @@ import me.crypnotic.neutron.module.command.options.*;
 
 @RequiredArgsConstructor
 public enum Commands {
-    ALERT("alert", AlertCommand::new),
     FIND("find", FindCommand::new),
     INFO("info", InfoCommand::new),
     GLIST("glist", GlistCommand::new),
-    MESSAGE("message", MessageCommand::new),
-    REPLY("reply", ReplyCommand::new),
     SEND("send", SendCommand::new);
 
     @Getter

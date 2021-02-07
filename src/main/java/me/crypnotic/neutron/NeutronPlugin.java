@@ -41,7 +41,6 @@ import me.crypnotic.neutron.api.configuration.Configuration;
 import me.crypnotic.neutron.event.StateHandler;
 import me.crypnotic.neutron.manager.ModuleManager;
 import me.crypnotic.neutron.manager.locale.LocaleManager;
-import me.crypnotic.neutron.manager.user.UserManager;
 
 @Plugin(id = "@ID@", name = "@NAME@", version = "@VERSION@", description = "@DESCRIPTION@")
 public class NeutronPlugin {
@@ -66,8 +65,6 @@ public class NeutronPlugin {
     private LocaleManager localeManager;
     @Getter
     private ModuleManager moduleManager;
-    @Getter
-    private UserManager userManager;
 
     public NeutronPlugin() {
         Neutron.setNeutron(this);
@@ -80,7 +77,6 @@ public class NeutronPlugin {
         this.stateHandler = new StateHandler(this);
 
         this.localeManager = new LocaleManager(this, configuration);
-        this.userManager = new UserManager(configuration);
         this.moduleManager = new ModuleManager(this, configuration);
 
         stateHandler.init();

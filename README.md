@@ -11,20 +11,13 @@ https://ci.codemc.org/job/Crypnotic/job/Neutron/lastSuccessfulBuild/
 _Neutron just entered its first release, there may still be lingering bugs_
 
 ## What does it offer?
-Currently, Neutron offers 6 commands:
-  * `alert` - broadcasts a message to everyone connected to the proxy
+Currently, Neutron offers 4 commands:
   * `find` - allows you to find what server another player is on
   * `info` - provides information regarding a player
   * `glist` - shows a list of all servers along with how many players are connected
-  * `message` - sends a private message to another player
   * `send`- sends either a player, a server, or everyone to a specified server
 
-Alongside the commands, Neutron offers 4 modules:
-  * Announcements:
-    * Announcements will be sent to all online players at set intervals
-    * Multiple lists can be defined, which can run a different intervals with different messages
-    * You can choose whether a list will maintain its order or be randomized
-    * Each list can have a `prefix`, which is added to the beginning of every message in the list
+Alongside the commands, Neutron offers 3 modules:
   * Commands:
     * Allows the customization of all command aliases
     * Disable each command individually, or disable them all
@@ -53,7 +46,7 @@ _All modules support reloading with the `/velocity reload` command_
 ## Permissions
 Permissions are simply in the way that all command permissions are `neutron.command.{command}`
 
-For example: the permission for alert is `neutron.command.alert`
+For example: the permission for find is `neutron.command.find`
 
 ## Issues
 If you run into any issues, please report them on Github: https://github.com/Crypnotic/Neutron/issues
