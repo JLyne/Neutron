@@ -40,7 +40,7 @@ import me.crypnotic.neutron.module.announcement.AnnouncementModule;
 import me.crypnotic.neutron.module.command.CommandModule;
 import me.crypnotic.neutron.module.connectmessage.ConnectMessageModule;
 import me.crypnotic.neutron.module.serverlist.ServerListModule;
-import net.kyori.text.Component;
+import net.kyori.adventure.text.Component;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.objectmapping.serialize.TypeSerializers;
 

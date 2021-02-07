@@ -37,8 +37,7 @@ import me.crypnotic.neutron.api.command.CommandWrapper;
 import me.crypnotic.neutron.api.event.UserPrivateMessageEvent;
 import me.crypnotic.neutron.api.locale.LocaleMessage;
 import me.crypnotic.neutron.api.user.User;
-import net.kyori.text.Component;
-import net.kyori.text.TextComponent;
+import net.kyori.adventure.text.Component;
 
 public class MessageCommand extends CommandWrapper {
 
@@ -52,7 +51,7 @@ public class MessageCommand extends CommandWrapper {
 
         String sourceName = source instanceof Player ? ((Player) source).getUsername() : "Console";
 
-        Component content = TextComponent.of(context.join(" ", 1));
+        Component content = Component.text(context.join(" ", 1));
         Component sourceMessage = getMessage(source, LocaleMessage.MESSAGE_SENDER, target.getUsername()).append(content);
         Component targetMessage = getMessage(target, LocaleMessage.MESSAGE_RECEIVER, sourceName).append(content);
 

@@ -26,8 +26,8 @@ package me.crypnotic.neutron.api.command;
 
 import java.util.Optional;
 
-import com.velocitypowered.api.command.Command;
 import com.velocitypowered.api.command.CommandSource;
+import com.velocitypowered.api.command.SimpleCommand;
 import com.velocitypowered.api.proxy.Player;
 
 import lombok.Getter;
@@ -38,9 +38,9 @@ import me.crypnotic.neutron.api.Neutron;
 import me.crypnotic.neutron.api.locale.LocaleMessage;
 import me.crypnotic.neutron.api.user.User;
 import me.crypnotic.neutron.util.StringHelper;
-import net.kyori.text.Component;
+import net.kyori.adventure.text.Component;
 
-public abstract class CommandWrapper implements Command {
+public abstract class CommandWrapper implements SimpleCommand {
 
     @Getter
     @Setter
@@ -50,9 +50,9 @@ public abstract class CommandWrapper implements Command {
     private String[] aliases;
 
     @Override
-    public void execute(CommandSource source, String[] args) {
+    public void execute(Invocation invocation) {
         try {
-            handle(source, new CommandContext(args));
+            handle(invocation.source(), new CommandContext(invocation.arguments()));
         } catch (CommandExitException exception) {
             /* Catch silently */
         }

@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.velocitypowered.api.command.CommandMeta;
 import me.crypnotic.neutron.api.StateResult;
 import me.crypnotic.neutron.api.command.CommandWrapper;
 import me.crypnotic.neutron.api.module.Module;
@@ -61,7 +62,9 @@ public class CommandModule extends Module {
             wrapper.setAliases(aliases.toArray(new String[aliases.size()]));
 
             if (wrapper.isEnabled()) {
-                getNeutron().getProxy().getCommandManager().register(wrapper, wrapper.getAliases());
+                CommandMeta meta = getNeutron().getProxy().getCommandManager()
+                        .metaBuilder(wrapper.getAliases()[0]).aliases(wrapper.getAliases()).build();
+                getNeutron().getProxy().getCommandManager().register(meta, wrapper);
             }
 
             commands.put(spec, wrapper);

@@ -31,7 +31,7 @@ import com.velocitypowered.api.command.CommandSource;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import me.crypnotic.neutron.api.user.User;
-import net.kyori.text.Component;
+import net.kyori.adventure.text.Component;
 
 @RequiredArgsConstructor
 public final class AlertBroadcastEvent {

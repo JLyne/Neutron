@@ -31,13 +31,13 @@ import me.crypnotic.neutron.api.command.CommandContext;
 import me.crypnotic.neutron.api.command.CommandWrapper;
 import me.crypnotic.neutron.api.event.AlertBroadcastEvent;
 import me.crypnotic.neutron.api.locale.LocaleMessage;
-import net.kyori.text.Component;
+import net.kyori.adventure.text.Component;
 
 @RequiredArgsConstructor
 public class AlertCommand extends CommandWrapper {
 
     @Override
-    public void handle(CommandSource source, CommandContext context) throws CommandExitException {
+    public void handle(CommandSource source, CommandContext context) {
         assertPermission(source, "neutron.command.alert");
         assertUsage(source, context.size() > 0);
 

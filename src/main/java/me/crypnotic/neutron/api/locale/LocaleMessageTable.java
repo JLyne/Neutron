@@ -35,7 +35,7 @@ import lombok.RequiredArgsConstructor;
 import me.crypnotic.neutron.api.Neutron;
 import me.crypnotic.neutron.api.configuration.Configuration;
 import me.crypnotic.neutron.util.StringHelper;
-import net.kyori.text.Component;
+import net.kyori.adventure.text.Component;
 
 @RequiredArgsConstructor
 public class LocaleMessageTable {

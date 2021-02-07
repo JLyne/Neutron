@@ -30,7 +30,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import me.crypnotic.neutron.module.announcement.Announcement;
-import net.kyori.text.Component;
+import net.kyori.adventure.text.Component;
 
 public final class AnnouncementBroadcastEvent implements ResultedEvent<AnnouncementBroadcastEvent.BroadcastResult> {
 
