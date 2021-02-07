@@ -24,7 +24,6 @@
 */
 package me.crypnotic.neutron.module.command.options;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -82,19 +81,24 @@ public class SendCommand extends CommandWrapper {
     }
 
     @Override
-    public List<String> suggest(CommandSource source, String[] args) {
-        if (args.length == 1) {
-            List<String> result = getNeutron().getProxy().matchPlayer(args[0]).stream().map(Player::getUsername).collect(Collectors.toList());
+    public List<String> suggest(Invocation invocation) {
+        String[] arguments = invocation.arguments();
+
+        if(arguments.length < 2) {
+            String query = arguments.length == 1 ? arguments[0] : "";
+
+             List<String> result = getNeutron().getProxy().matchPlayer(query).stream().map(Player::getUsername)
+                    .collect(Collectors.toList());
 
             /* Inject `current`/`all` subcommands */
             result.add("current");
             result.add("all");
 
             return result;
-        } else if (args.length == 2) {
-            return getNeutron().getProxy().matchServer(args[0]).stream().map(s -> s.getServerInfo().getName()).collect(Collectors.toList());
+        } else {
+            return getNeutron().getProxy().matchServer(arguments[1]).stream().map(s -> s.getServerInfo().getName())
+                    .collect(Collectors.toList());
         }
-        return Arrays.asList();
     }
 
     @Override

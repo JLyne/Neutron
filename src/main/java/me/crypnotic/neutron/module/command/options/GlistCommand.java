@@ -51,11 +51,12 @@ public class GlistCommand extends CommandWrapper {
             ServerInfo info = server.getServerInfo();
             Collection<Player> players = server.getPlayersConnected();
 
-            String playerString = players.stream().map(Player::getUsername).sorted(String.CASE_INSENSITIVE_ORDER).collect(Collectors.joining(", "));
+            String playerString = players.stream().map(Player::getUsername)
+                    .sorted(String.CASE_INSENSITIVE_ORDER).collect(Collectors.joining(", "));
 
             Component message = getMessage(source, LocaleMessage.LIST_MESSAGE, info.getName(), players.size());
 
-            message = message.hoverEvent(HoverEvent.showText(TextComponent.of(playerString)));
+            message = message.hoverEvent(HoverEvent.showText(Component.text(playerString)));
             message = message.clickEvent(ClickEvent.runCommand("/server " + info.getName()));
 
             source.sendMessage(message);

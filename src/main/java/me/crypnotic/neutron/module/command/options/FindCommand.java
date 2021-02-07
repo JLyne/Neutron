@@ -24,7 +24,6 @@
 */
 package me.crypnotic.neutron.module.command.options;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,7 +38,7 @@ import me.crypnotic.neutron.api.locale.LocaleMessage;
 public class FindCommand extends CommandWrapper {
 
     @Override
-    public void handle(CommandSource source, CommandContext context) throws CommandExitException {
+    public void handle(CommandSource source, CommandContext context) {
         assertPermission(source, "neutron.command.find");
         assertUsage(source, context.size() > 0);
 
@@ -54,11 +53,10 @@ public class FindCommand extends CommandWrapper {
     }
 
     @Override
-    public List<String> suggest(CommandSource source, String[] args) {
-        if (args.length == 1) {
-            return getNeutron().getProxy().matchPlayer(args[0]).stream().map(Player::getUsername).collect(Collectors.toList());
-        }
-        return Arrays.asList();
+    public List<String> suggest(Invocation invocation) {
+        String[] arguments = invocation.arguments();
+        String query = arguments.length > 0 ? arguments[0] : "";
+        return getNeutron().getProxy().matchPlayer(query).stream().map(Player::getUsername).collect(Collectors.toList());
     }
 
     @Override

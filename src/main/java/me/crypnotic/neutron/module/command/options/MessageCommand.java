@@ -24,7 +24,7 @@
 */
 package me.crypnotic.neutron.module.command.options;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -42,7 +42,7 @@ import net.kyori.adventure.text.Component;
 public class MessageCommand extends CommandWrapper {
 
     @Override
-    public void handle(CommandSource source, CommandContext context) throws CommandExitException {
+    public void handle(CommandSource source, CommandContext context) {
         assertPermission(source, "neutron.command.message");
         assertUsage(source, context.size() > 1);
 
@@ -80,10 +80,14 @@ public class MessageCommand extends CommandWrapper {
     }
 
     @Override
-    public List<String> suggest(CommandSource source, String[] args) {
-        if (args.length == 1) {
-            return getNeutron().getProxy().matchPlayer(args[0]).stream().map(Player::getUsername).collect(Collectors.toList());
+    public List<String> suggest(Invocation invocation) {
+        String[] arguments = invocation.arguments();
+
+        if(arguments.length > 1) {
+            return Collections.emptyList();
         }
-        return Arrays.asList();
+
+        String query = arguments.length == 1 ? arguments[0] : "";
+        return getNeutron().getProxy().matchPlayer(query).stream().map(Player::getUsername).collect(Collectors.toList());
     }
 }

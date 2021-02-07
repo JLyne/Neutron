@@ -24,10 +24,9 @@
 */
 package me.crypnotic.neutron.module.command.options;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.proxy.Player;
@@ -42,7 +41,7 @@ import net.kyori.adventure.text.Component;
 public class ReplyCommand extends CommandWrapper {
 
     @Override
-    public void handle(CommandSource source, CommandContext context) throws CommandExitException {
+    public void handle(CommandSource source, CommandContext context) {
         assertPermission(source, "neutron.command.reply");
         assertUsage(source, context.size() > 0);
 
@@ -52,7 +51,7 @@ public class ReplyCommand extends CommandWrapper {
         String sourceName = source instanceof Player ? ((Player) source).getUsername() : "Console";
         String targetName = target instanceof Player ? ((Player) target).getUsername() : "Console";
 
-        Component content = TextComponent.of(context.join(" "));
+        Component content = Component.text(context.join(" "));
         Component sourceMessage = getMessage(source, LocaleMessage.MESSAGE_SENDER, targetName).append(content);
         Component targetMessage = getMessage(target, LocaleMessage.MESSAGE_RECEIVER, sourceName).append(content);
 
@@ -80,10 +79,7 @@ public class ReplyCommand extends CommandWrapper {
     }
 
     @Override
-    public List<String> suggest(CommandSource source, String[] args) {
-        if (args.length == 1) {
-            return getNeutron().getProxy().matchPlayer(args[0]).stream().map(Player::getUsername).collect(Collectors.toList());
-        }
-        return Arrays.asList();
+    public List<String> suggest(Invocation invocation) {
+        return Collections.emptyList();
     }
 }
