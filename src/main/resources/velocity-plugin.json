@@ -1,0 +1,8 @@
+{
+  "id": "neutron",
+  "name": "Neutron",
+  "version": "@project.version@",
+  "authors": ["Jim (NotKatuen)", "Crypnotic"],
+  "dependencies": [],
+  "main": "me.crypnotic.neutron.NeutronPlugin"
+}

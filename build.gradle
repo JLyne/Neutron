@@ -1,15 +1,14 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
 plugins {
- 	id 'net.kyori.blossom' version '1.1.0'
-	id 'com.github.johnrengelman.shadow' version '4.0.4'
+    id 'io.freefair.lombok' version '5.3.3.3'
+	id 'com.github.johnrengelman.shadow' version '7.0.0'
 	id 'maven-publish'
 	id 'java'
 }
 
-group 'me.crypnotic'
-version '3.0.0-SNAPSHOT'
-description 'An open-source essential suite for the Velocity proxy'
-
 repositories {
+	mavenLocal()
 	mavenCentral()
 
 	maven {
@@ -17,54 +16,48 @@ repositories {
     }
     
     maven {
-        url = 'https://repo.spongepowered.org/maven'
+        url 'https://repo.spongepowered.org/maven'
     }
 }
 
-defaultTasks("clean", "build", "shadowJar")
-
 dependencies {
-	compile ('org.spongepowered:configurate-hocon:3.6') {
-		exclude group: 'org.checkerframework', module: 'checker-qual'
-		exclude group: 'com.google.guava', module: 'guava'
-	}
+	implementation 'org.spongepowered:configurate-hocon:3.6'
 	
-	compileOnly 'com.velocitypowered:velocity-api:1.1.0-SNAPSHOT'
-	annotationProcessor 'com.velocitypowered:velocity-api:1.1.0-SNAPSHOT'
-
-	compileOnly 'org.projectlombok:lombok:1.18.4'
-	annotationProcessor 'org.projectlombok:lombok:1.18.4'
+	compileOnly 'com.velocitypowered:velocity-api:3.0.0'
+	annotationProcessor 'com.velocitypowered:velocity-api:3.0.0'
 }
 
-blossom {
-	replaceToken '@ID@', name.toLowerCase()
-	replaceToken '@NAME@', name
-	replaceToken '@VERSION@', version
-	replaceToken '@DESCRIPTION@', description
-}
+group 'uk.co.notnull'
+version '3.0.0-SNAPSHOT'
+description 'An open-source essential suite for the Velocity proxy'
 
-publishing {
-	publications {
-	    shadow(MavenPublication) { publication ->
-      		from project.shadow.component(publication)
-    	}
-	}
-	
-	repositories {
-		maven {
-			def releasesRepoUrl = System.getenv('mavenUrl')
-			def snapshotsRepoUrl = System.getenv('mavenSnapshotUrl')
-			
-			url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
-				
-			def mavenUsername = System.getenv('mavenUsername')
-			def mavenPassword = System.getenv('mavenPassword')
-			if (mavenUsername != null && mavenPassword != null) {
-				credentials {
-					username = mavenUsername
-					password = mavenPassword
-				}
-			}
-		}
-	}
-} 
+java.sourceCompatibility = JavaVersion.VERSION_11
+java.targetCompatibility = JavaVersion.VERSION_11
+
+tasks {
+    processResources {
+        from("${project.rootDir}/src/main/resources") {
+            duplicatesStrategy = DuplicatesStrategy.INCLUDE
+            project.properties.findAll().each {
+                prop ->
+                    if (prop.value != null && prop.value instanceof java.lang.String) {
+                        filter(ReplaceTokens, tokens: [(prop.key): prop.value])
+                        filter(ReplaceTokens, tokens: [('project.' + prop.key): prop.value])
+                    }
+            }
+        }
+    }
+
+    compileJava {
+        options.compilerArgs += ["-Xlint:all", "-Xlint:-processing"]
+        options.encoding = 'UTF-8'
+    }
+
+    shadowJar {
+        archiveClassifier.set('')
+    }
+
+    build {
+        dependsOn(shadowJar)
+    }
+}

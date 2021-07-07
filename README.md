@@ -1,14 +1,7 @@
 # Neutron | An open-source essential suite for the Velocity proxy
-[![Build Status](https://travis-ci.org/Crypnotic/Neutron.svg?branch=master)](https://travis-ci.org/Crypnotic/Neutron)
 
 ## What is Neutron?
 Neutron is an open-source plugin written to try to provide the bare essentials for servers using Velocity.
-
-## How do I get it?
-You can download Neutron from the CodeMC Jenkins: 
-https://ci.codemc.org/job/Crypnotic/job/Neutron/lastSuccessfulBuild/
-
-_Neutron just entered its first release, there may still be lingering bugs_
 
 ## What does it offer?
 Currently, Neutron offers 4 commands:
@@ -47,8 +40,3 @@ _All modules support reloading with the `/velocity reload` command_
 Permissions are simply in the way that all command permissions are `neutron.command.{command}`
 
 For example: the permission for find is `neutron.command.find`
-
-## Issues
-If you run into any issues, please report them on Github: https://github.com/Crypnotic/Neutron/issues
-
-I'm usually lurking around the Velocity discord if you want to chat about anything regarding Neutron
