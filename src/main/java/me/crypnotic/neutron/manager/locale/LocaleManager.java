@@ -47,7 +47,7 @@ public class LocaleManager implements Reloadable {
 
     private LocaleConfig config;
     private File folder;
-    private Map<Locale, LocaleMessageTable> locales = new HashMap<Locale, LocaleMessageTable>();
+    private final Map<Locale, LocaleMessageTable> locales = new HashMap<>();
     @Getter
     private Locale defaultLocale;
 

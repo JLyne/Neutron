@@ -33,13 +33,13 @@ public class LocaleConfig {
 
     @Getter
     @Setting("allow-translations")
-    private boolean allowTranslations = true;
+    private final boolean allowTranslations = true;
     
     @Getter
     @Setting("enabled")
-    private boolean enabled = true;
+    private final boolean enabled = true;
     
     @Getter
     @Setting("fallback-locale")
-    private String fallbackLocale = "en-US";
+    private final String fallbackLocale = "en-US";
 }

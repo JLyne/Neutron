@@ -41,7 +41,7 @@ public enum LocaleMessage {
     INVALID_USAGE("<red>Usage: <usage>"),
 
     LIST_HEADER("<green>There are currently <aqua><online> <green>players online<br><gray><italic>Hover over a server to see the players online"),
-    LIST_MESSAGE("<green>[<server>] <yellow><online> online"),
+    LIST_MESSAGE("<green>[<click:run_command:/server <server>><server></click>] <yellow><hover:show_text:<players>><online> online"),
 
     NO_PERMISSION("<red>You don't have permission to execute this command."),
     NOT_CONNECTED_TO_SERVER("<red>You must be connected to a server to use this subcommand."),

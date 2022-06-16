@@ -35,7 +35,7 @@ import me.crypnotic.neutron.util.StringHelper;
 @RequiredArgsConstructor
 public class StateResult {
 
-    private ExecutorService executor = Executors.newFixedThreadPool(2);
+    private final ExecutorService executor = Executors.newFixedThreadPool(2);
 
     @Getter
     private final boolean success;

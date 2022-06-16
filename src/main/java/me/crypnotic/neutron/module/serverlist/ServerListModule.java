@@ -98,9 +98,7 @@ public class ServerListModule extends Module {
                     ServerPing ping = server.ping().get();
                     Optional<Players> players = ping.getPlayers();
 
-                    if (players.isPresent()) {
-                        buffer += players.get().getMax();
-                    }
+                    players.ifPresent(value -> buffer += value.getMax());
                 } catch (InterruptedException | ExecutionException exception) {
                     /* Catch silently */
                 }

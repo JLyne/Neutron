@@ -116,7 +116,8 @@ public class Configuration {
             try {
                 File file = FileHelper.getOrCreate(folder, name);
                 ConfigurationLoader<?> loader = HoconConfigurationLoader.builder()
-                        .setDefaultOptions(ConfigurationOptions.defaults().setShouldCopyDefaults(true)).setFile(file).build();
+                        .setDefaultOptions(ConfigurationOptions.defaults().withShouldCopyDefaults(true)).setFile(file)
+                        .build();
 
                 ConfigurationNode node = loader.load();
 

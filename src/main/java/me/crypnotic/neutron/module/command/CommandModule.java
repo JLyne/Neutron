@@ -37,7 +37,7 @@ import ninja.leaping.configurate.ConfigurationNode;
 
 public class CommandModule extends Module {
 
-    private Map<Commands, CommandWrapper> commands = new HashMap<Commands, CommandWrapper>();
+    private final Map<Commands, CommandWrapper> commands = new HashMap<>();
 
     @Override
     public StateResult init() {
@@ -59,7 +59,7 @@ public class CommandModule extends Module {
             List<String> aliases = node.getNode("aliases").getList(Object::toString);
 
             wrapper.setEnabled(node.getNode("enabled").getBoolean());
-            wrapper.setAliases(aliases.toArray(new String[aliases.size()]));
+            wrapper.setAliases(aliases.toArray(new String[0]));
 
             if (wrapper.isEnabled()) {
                 CommandMeta meta = getNeutron().getProxy().getCommandManager()

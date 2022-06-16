@@ -43,7 +43,7 @@ public class ModuleManager implements Reloadable {
     private final NeutronPlugin neutron;
     private final Configuration configuration;
 
-    private Map<Class<? extends Module>, Module> modules = new HashMap<Class<? extends Module>, Module>();
+    private final Map<Class<? extends Module>, Module> modules = new HashMap<>();
 
     @Override
     public StateResult init() {
@@ -62,14 +62,10 @@ public class ModuleManager implements Reloadable {
             if (module.isEnabled()) {
                 if (module.init().isSuccess()) {
                     enabled += 1;
-
-                    continue;
                 } else {
                     neutron.getLogger().warn("Module failed to initialize: " + module.getName());
 
                     module.setEnabled(false);
-
-                    continue;
                 }
             }
         }
@@ -109,14 +105,10 @@ public class ModuleManager implements Reloadable {
 
                 if (module.reload().isSuccess()) {
                     enabled += 1;
-
-                    continue;
                 } else {
                     neutron.getLogger().warn("Module failed to reload: " + module.getName());
 
                     module.setEnabled(false);
-
-                    continue;
                 }
             }
         }
