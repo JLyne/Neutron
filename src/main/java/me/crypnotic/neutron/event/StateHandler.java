@@ -32,6 +32,8 @@ import lombok.RequiredArgsConstructor;
 import me.crypnotic.neutron.NeutronPlugin;
 import me.crypnotic.neutron.api.Reloadable;
 
+import java.util.Collections;
+
 @RequiredArgsConstructor
 public class StateHandler {
 
@@ -55,14 +57,17 @@ public class StateHandler {
     }
 
     private void init(Reloadable reloadable) {
-        reloadable.init().fail("Failed to initialize {0}. Many features may not work", reloadable.getName());
+        reloadable.init().fail("Failed to initialize <module>. Many features may not work",
+                               Collections.singletonMap("module", reloadable.getName()));
     }
 
     private void reload(Reloadable reloadable) {
-        reloadable.reload().fail("Failed to reload {0}. Many features may not work", reloadable.getName());
+        reloadable.reload().fail("Failed to reload <module>. Many features may not work",
+                                 Collections.singletonMap("module",  reloadable.getName()));
     }
 
     private void shutdown(Reloadable reloadable) {
-        reloadable.shutdown().fail("Failed to shutdown {0}!", reloadable.getName());
+        reloadable.shutdown().fail("Failed to shutdown <module>!",
+                                   Collections.singletonMap("module",  reloadable.getName()));
     }
 }

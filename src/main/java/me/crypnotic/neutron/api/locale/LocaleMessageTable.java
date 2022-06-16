@@ -34,20 +34,16 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import me.crypnotic.neutron.api.Neutron;
 import me.crypnotic.neutron.api.configuration.Configuration;
-import me.crypnotic.neutron.util.StringHelper;
-import net.kyori.adventure.text.Component;
 
 @RequiredArgsConstructor
 public class LocaleMessageTable {
 
     @Getter
     private final Locale locale;
-    private final Map<LocaleMessage, String> messages = new HashMap<LocaleMessage, String>();
+    private final Map<LocaleMessage, String> messages = new HashMap<>();
 
-    public Component get(LocaleMessage key, Object... values) {
-        String message = messages.get(key);
-
-        return StringHelper.formatAndColor(message != null ? message : key.getDefaultMessage(), values);
+    public String get(LocaleMessage key) {
+        return messages.getOrDefault(key, key.getDefaultMessage());
     }
 
     public boolean set(LocaleMessage key, String message) {

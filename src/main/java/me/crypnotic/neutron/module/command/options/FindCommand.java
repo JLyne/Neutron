@@ -24,7 +24,9 @@
 */
 package me.crypnotic.neutron.module.command.options;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.velocitypowered.api.command.CommandSource;
@@ -43,13 +45,14 @@ public class FindCommand extends CommandWrapper {
         assertUsage(source, context.size() > 0);
 
         Player target = getNeutron().getProxy().getPlayer(context.get(0)).orElse(null);
-        assertNotNull(source, target, LocaleMessage.UNKNOWN_PLAYER, context.get(0));
+        assertNotNull(source, target, LocaleMessage.UNKNOWN_PLAYER, Collections.singletonMap("player", context.get(0)));
 
         ServerConnection server = target.getCurrentServer().get();
         /* We'll consider this offline as the Player is in a limbo state */
-        assertNotNull(source, server, LocaleMessage.PLAYER_OFFLINE, context.get(0));
+        assertNotNull(source, server, LocaleMessage.PLAYER_OFFLINE, Collections.singletonMap("player", context.get(0)));
 
-        message(source, LocaleMessage.FIND_MESSAGE, target.getUsername(), server.getServerInfo().getName());
+        message(source, LocaleMessage.FIND_MESSAGE, Map.of(
+                "player", target.getUsername(), "server", server.getServerInfo().getName()));
     }
 
     @Override

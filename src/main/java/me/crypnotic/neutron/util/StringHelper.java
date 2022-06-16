@@ -24,10 +24,7 @@
 */
 package me.crypnotic.neutron.util;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Locale;
-import java.util.UUID;
+import java.util.*;
 
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.proxy.Player;
@@ -37,65 +34,59 @@ import me.crypnotic.neutron.api.Neutron;
 import me.crypnotic.neutron.api.locale.LocaleMessage;
 import me.crypnotic.neutron.api.locale.LocaleMessageTable;
 import me.crypnotic.neutron.manager.locale.LocaleManager;
+import net.kyori.adventure.audience.MessageType;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.Style;
-import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
+import net.kyori.adventure.text.ComponentLike;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import org.jetbrains.annotations.NotNull;
 
 public class StringHelper {
 
-    public static Component color(String text) {
-        if (text == null) {
-            return null;
+    public static final MiniMessage miniMessage = MiniMessage.miniMessage();
+    public static final LegacyComponentSerializer legacySerializer = LegacyComponentSerializer.legacyAmpersand();
+
+    public static String format(String message, Map<String, String> stringReplacements) {
+        for (Map.Entry<String, String> entry : stringReplacements.entrySet()) {
+            message = message.replace(entry.getKey(), entry.getValue());
         }
 
-        return LegacyComponentSerializer.builder().extractUrls().character('&').build().deserialize(text);
+        return message;
     }
 
-    public static Component serialize(String json) {
-        if (json == null) {
-            return null;
+    public static Component formatComponent(String message) {
+        return formatComponent(message, Collections.emptyMap(), Collections.emptyMap());
+    }
+
+    public static Component formatComponent(String message, Map<String, String> stringReplacements, Map<String, ComponentLike> componentReplacements) {
+        TagResolver.@NotNull Builder placeholders = TagResolver.builder();
+
+        for (Map.Entry<String, String> entry : stringReplacements.entrySet()) {
+            placeholders.resolver(Placeholder.parsed(entry.getKey(), entry.getValue()));
         }
 
-        return GsonComponentSerializer.gson().deserialize(json);
-    }
-
-    public static String format(String text, Object... params) {
-        for (int i = 0; i < params.length; i++) {
-            Object param = params[i];
-            text = text.replace("{" + i + "}", param == null ? "null" : param.toString());
+        for (Map.Entry<String, ComponentLike> entry : componentReplacements.entrySet()) {
+            placeholders.resolver(Placeholder.component(entry.getKey(), entry.getValue()));
         }
-        return text;
-    }
 
-    public static Component formatAndColor(String text, Object... params) {
-        return color(format(text, params));
-    }
-
-    public static Component append(Component root, Component child) {
-        List<Component> rootChildren = root.children();
-        Component lastRootChild = rootChildren.get(rootChildren.size() - 1);
-        Style lastRootChildStyle = lastRootChild.style();
-
-        Component result = root.append(Component.text().style(lastRootChildStyle).append(child).build());
-
-        return result;
+        return miniMessage.deserialize(message, placeholders.build());
     }
 
     public static SamplePlayer[] toSamplePlayerArray(List<String> input) {
         SamplePlayer[] result = new SamplePlayer[input.size()];
         for (int i = 0; i < input.size(); i++) {
-            result[i] = new SamplePlayer(LegacyComponentSerializer.legacyAmpersand()
-                                                 .serialize(color(input.get(i))), UUID.randomUUID());
+            result[i] = new SamplePlayer(legacySerializer.serialize(formatComponent(input.get(i))), UUID.randomUUID());
         }
         return result;
     }
 
-    public static void message(CommandSource source, LocaleMessage message, Object... values) {
-        source.sendMessage(getMessage(source, message, values));
+    public static void sendComponent(CommandSource source, LocaleMessage message, Map<String, String> stringReplacements, Map<String, ComponentLike> componentReplacements) {
+        source.sendMessage(getComponent(source, message, stringReplacements, componentReplacements), MessageType.SYSTEM);
     }
 
-    public static Component getMessage(CommandSource source, LocaleMessage message, Object... values) {
+    public static Component getComponent(CommandSource source, LocaleMessage message, Map<String, String> stringReplacements, Map<String, ComponentLike> componentReplacements) {
         LocaleManager manager = Neutron.getNeutron().getLocaleManager();
         Locale locale = manager.getDefaultLocale();
         if (source instanceof Player) {
@@ -103,13 +94,8 @@ public class StringHelper {
         }
 
         LocaleMessageTable table = manager.get(locale);
-        if (table != null) {
-            return table.get(message, values);
-        }
-        return StringHelper.formatAndColor(message.getDefaultMessage(), values);
-    }
-    
-    public static void broadcast(Collection<? extends CommandSource> recipients, LocaleMessage message, Object... values) {
-        recipients.forEach(target -> message(target, message, values));
+        String text = table != null ? table.get(message) : message.getDefaultMessage();
+
+        return formatComponent(text, stringReplacements, componentReplacements);
     }
 }

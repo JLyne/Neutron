@@ -24,6 +24,7 @@
 */
 package me.crypnotic.neutron.api;
 
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -65,12 +66,12 @@ public class StateResult {
         }
     }
 
-    public void success(String message, Object... values) {
-        success(() -> Neutron.getNeutron().getLogger().info(StringHelper.format(message, values)));
+    public void success(String message, Map<String, String> replacements) {
+        success(() -> Neutron.getNeutron().getLogger().info(StringHelper.format(message, replacements)));
     }
 
-    public void fail(String message, Object... values) {
-        fail(() -> Neutron.getNeutron().getLogger().warn(StringHelper.format(message, values)));
+    public void fail(String message, Map<String, String> replacements) {
+        fail(() -> Neutron.getNeutron().getLogger().warn(StringHelper.format(message, replacements)));
     }
 
     public static StateResult success() {

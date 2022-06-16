@@ -25,6 +25,8 @@
 package me.crypnotic.neutron.module.command.options;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.velocitypowered.api.command.CommandSource;
@@ -35,6 +37,7 @@ import com.velocitypowered.api.proxy.server.ServerInfo;
 import me.crypnotic.neutron.api.command.CommandContext;
 import me.crypnotic.neutron.api.command.CommandWrapper;
 import me.crypnotic.neutron.api.locale.LocaleMessage;
+import net.kyori.adventure.audience.MessageType;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -45,7 +48,8 @@ public class GlistCommand extends CommandWrapper {
     public void handle(CommandSource source, CommandContext context) {
         assertPermission(source, "neutron.command.glist");
 
-        message(source, LocaleMessage.LIST_HEADER, getNeutron().getProxy().getPlayerCount());
+        message(source, LocaleMessage.LIST_HEADER,
+                Collections.singletonMap("online", String.valueOf(getNeutron().getProxy().getPlayerCount())));
 
         for (RegisteredServer server : getNeutron().getProxy().getAllServers()) {
             ServerInfo info = server.getServerInfo();
@@ -54,12 +58,14 @@ public class GlistCommand extends CommandWrapper {
             String playerString = players.stream().map(Player::getUsername)
                     .sorted(String.CASE_INSENSITIVE_ORDER).collect(Collectors.joining(", "));
 
-            Component message = getMessage(source, LocaleMessage.LIST_MESSAGE, info.getName(), players.size());
+            Component message = getMessage(source, LocaleMessage.LIST_MESSAGE,
+                                           Map.of(
+                                                   "server", info.getName(),
+                                                   "online", String.valueOf(players.size()),
+                                                   "players", playerString),
+                                           Collections.emptyMap());
 
-            message = message.hoverEvent(HoverEvent.showText(Component.text(playerString)));
-            message = message.clickEvent(ClickEvent.runCommand("/server " + info.getName()));
-
-            source.sendMessage(message);
+            source.sendMessage(message, MessageType.SYSTEM);
         }
     }
 

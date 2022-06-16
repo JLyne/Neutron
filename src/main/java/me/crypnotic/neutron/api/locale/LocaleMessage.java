@@ -29,34 +29,34 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public enum LocaleMessage {
-    FIND_MESSAGE("&b{0} &7is connected to &b{1}"),
+    FIND_MESSAGE("<aqua><player> <gray>is connected to <aqua><server>"),
 
-    INFO_HEADER("&l&7==> Information for player: &b{0}"),
-    INFO_LOCALE("&7Locale: &b{0}"),
-    INFO_PING("&7Ping: &b{0}"),
-    INFO_SERVER("&7Current Server: &b{0}"),
-    INFO_UUID("&7Unique Id: &b{0}"),
-    INFO_VERSION("&7Minecraft Version: &b{0}"),
+    INFO_HEADER("<bold><gray>==> Information for player: <aqua><player>"),
+    INFO_LOCALE("<gray>Locale: <aqua><locale>"),
+    INFO_PING("<gray>Ping: <aqua><ping>"),
+    INFO_SERVER("<gray>Current Server: <aqua><server>"),
+    INFO_UUID("<gray>Unique Id: <aqua><uuid>"),
+    INFO_VERSION("<gray>Minecraft Version: <aqua><version>"),
 
-    INVALID_USAGE("&cUsage: {0}"),
+    INVALID_USAGE("<red>Usage: <usage>"),
 
-    LIST_HEADER("&aThere are currently &b{0} &aplayers online\n&7&oHover over a server to see the players online"),
-    LIST_MESSAGE("&a[{0}] &e{1} player{2} online"),
+    LIST_HEADER("<green>There are currently <aqua><online> <green>players online<br><gray><italic>Hover over a server to see the players online"),
+    LIST_MESSAGE("<green>[<server>] <yellow><online> online"),
 
-    NO_PERMISSION("&cYou don't have permission to execute this command."),
-    NOT_CONNECTED_TO_SERVER("&cYou must be connected to a server to use this subcommand."),
+    NO_PERMISSION("<red>You don't have permission to execute this command."),
+    NOT_CONNECTED_TO_SERVER("<red>You must be connected to a server to use this subcommand."),
 
-    SEND_ALL("&aAll players have been sent to &b{0}"),
-    SEND_CURRENT("&aAll players from your current server have been sent to &b{0}"),
-    SEND_MESSAGE("&aYou have been sent to &b{0}"),
-    SEND_PLAYER("&b{0} &ahas been sent to &b{1}"),
+    SEND_ALL("<green>All players have been sent to <aqua><server>"),
+    SEND_CURRENT("<green>All players from your current server have been sent to <aqua><server>"),
+    SEND_MESSAGE("<green>You have been sent to <aqua><server>"),
+    SEND_PLAYER("<aqua><player> <green>has been sent to <aqua><server>"),
 
-    PLAYER_OFFLINE("&c{0} is currently offline."),
-    PLAYER_ONLY_COMMAND("&cOnly players can use this subcommand."),
-    PLAYER_ONLY_SUBCOMMAND("&cOnly players can use this subcommand."),
+    PLAYER_OFFLINE("<red><player> is currently offline."),
+    PLAYER_ONLY_COMMAND("<red>Only players can use this subcommand."),
+    PLAYER_ONLY_SUBCOMMAND("<red>Only players can use this subcommand."),
 
-    UNKNOWN_PLAYER("&cUnknown player: {0}"),
-    UNKNOWN_SERVER("&cUnknown server: {0}");
+    UNKNOWN_PLAYER("<red>Unknown player: <player>"),
+    UNKNOWN_SERVER("<red>Unknown server: <server>");
 
     @Getter
     private final String defaultMessage;

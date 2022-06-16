@@ -24,6 +24,7 @@
 */
 package me.crypnotic.neutron.module.command.options;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -43,16 +44,16 @@ public class InfoCommand extends CommandWrapper {
         assertUsage(source, context.size() > 0);
 
         Player target = getNeutron().getProxy().getPlayer(context.get(0)).orElse(null);
-        assertNotNull(source, target, LocaleMessage.UNKNOWN_PLAYER, context.get(0));
+        assertNotNull(source, target, LocaleMessage.UNKNOWN_PLAYER, Collections.singletonMap("player", context.get(0)));
 
         ServerConnection server = target.getCurrentServer().orElse(null);
 
-        message(source, LocaleMessage.INFO_HEADER, target.getUsername());
-        message(source, LocaleMessage.INFO_UUID, target.getUniqueId().toString());
-        message(source, LocaleMessage.INFO_VERSION, target.getProtocolVersion());
-        message(source, LocaleMessage.INFO_LOCALE, target.getPlayerSettings().getLocale());
-        message(source, LocaleMessage.INFO_SERVER, server != null ? server.getServerInfo().getName() : "N/A");
-        message(source, LocaleMessage.INFO_PING, target.getPing());
+        message(source, LocaleMessage.INFO_HEADER, Collections.singletonMap("player", target.getUsername()));
+        message(source, LocaleMessage.INFO_UUID, Collections.singletonMap("uuid", target.getUniqueId().toString()));
+        message(source, LocaleMessage.INFO_VERSION, Collections.singletonMap("version", String.valueOf(target.getProtocolVersion())));
+        message(source, LocaleMessage.INFO_LOCALE, Collections.singletonMap("locale", target.getPlayerSettings().getLocale().toString()));
+        message(source, LocaleMessage.INFO_SERVER, Collections.singletonMap("server", server != null ? server.getServerInfo().getName() : "N/A"));
+        message(source, LocaleMessage.INFO_PING, Collections.singletonMap("ping", String.valueOf(target.getPing())));
     }
 
     @Override

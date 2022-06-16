@@ -24,11 +24,9 @@
 */
 package me.crypnotic.neutron.module.serverlist;
 
-import java.util.Arrays;
 import java.util.List;
 
 import lombok.Getter;
-import net.kyori.adventure.text.Component;
 import ninja.leaping.configurate.objectmapping.Setting;
 import ninja.leaping.configurate.objectmapping.serialize.ConfigSerializable;
 
@@ -37,15 +35,15 @@ public class ServerListConfig {
 
     @Getter
     @Setting("motd")
-    private Component motd = Component.text("&7This velocity proxy is proudly powered by &bNeutron");
+    private final String motd = "<gray>This velocity proxy is proudly powered by <aqua>Neutron";
 
     @Getter
     @Setting("player-count")
-    private PlayerCount playerCount = new PlayerCount();
+    private final PlayerCount playerCount = new PlayerCount();
 
     @Getter
     @Setting("server-preview")
-    private ServerPreview serverPreview = new ServerPreview();
+    private final ServerPreview serverPreview = new ServerPreview();
 
     @ConfigSerializable
     public static class PlayerCount {
@@ -57,17 +55,17 @@ public class ServerListConfig {
                 + "        # PING - player count shows the sum of all backend servers' max player counts. Cached every 5 minutes\r\n"
                 + "        # STATIC - player count will always be the number defined under `player-count`\r\n" + "        #\r\n"
                 + "        # `player-count` is only used with the STATIC player count type")
-        private PlayerCountAction action = PlayerCountAction.STATIC;
+        private final PlayerCountAction action = PlayerCountAction.STATIC;
 
         @Getter
         @Setting("player-count")
-        private int maxPlayerCount = 500;
+        private final int maxPlayerCount = 500;
 
-        public static enum PlayerCountAction {
+        public enum PlayerCountAction {
             CURRENT,
             ONEMORE,
             PING,
-            STATIC;
+            STATIC
         }
     }
 
@@ -79,16 +77,16 @@ public class ServerListConfig {
                 + "        # MESSAGE - preview will show the messages defined under `messages`\r\n"
                 + "        # PLAYERS - preview matches the vanilla server preview of showing online players\r\n"
                 + "        # EMPTY - preview is empty\r\n" + "        #\r\n" + "        # `messages` is only used with the MESSAGE preview type")
-        private ServerPreviewAction action = ServerPreviewAction.MESSAGE;
+        private final ServerPreviewAction action = ServerPreviewAction.MESSAGE;
 
         @Getter
         @Setting("messages")
-        private List<String> messages = Arrays.asList("&7Powered by a &bNeutron");
+        private final List<String> messages = List.of("&7Powered by a &bNeutron");
 
-        public static enum ServerPreviewAction {
+        public enum ServerPreviewAction {
             EMPTY,
             MESSAGE,
-            PLAYERS;
+            PLAYERS
         }
     }
 }

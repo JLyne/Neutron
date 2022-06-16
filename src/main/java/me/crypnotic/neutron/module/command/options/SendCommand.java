@@ -24,7 +24,9 @@
 */
 package me.crypnotic.neutron.module.command.options;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.velocitypowered.api.command.CommandSource;
@@ -32,6 +34,7 @@ import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ServerConnection;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
 
+import com.velocitypowered.api.proxy.server.ServerInfo;
 import me.crypnotic.neutron.api.command.CommandContext;
 import me.crypnotic.neutron.api.command.CommandWrapper;
 import me.crypnotic.neutron.api.locale.LocaleMessage;
@@ -44,7 +47,8 @@ public class SendCommand extends CommandWrapper {
         assertUsage(source, context.size() > 1);
 
         RegisteredServer targetServer = getNeutron().getProxy().getServer(context.get(1).toLowerCase()).orElse(null);
-        assertNotNull(source, targetServer, LocaleMessage.UNKNOWN_SERVER, context.get(1));
+        assertNotNull(source, targetServer, LocaleMessage.UNKNOWN_SERVER, Collections.singletonMap("server", context.get(1)));
+        ServerInfo info = targetServer.getServerInfo();
 
         switch (context.get(0).toLowerCase()) {
         case "current":
@@ -56,26 +60,29 @@ public class SendCommand extends CommandWrapper {
 
             currentServer.getServer().getPlayersConnected().forEach(targetPlayer -> {
                 targetPlayer.createConnectionRequest(targetServer).fireAndForget();
-                message(targetPlayer, LocaleMessage.SEND_MESSAGE, targetServer.getServerInfo().getName());
+                message(targetPlayer, LocaleMessage.SEND_MESSAGE, Collections.singletonMap("server", info.getName()));
             });
 
-            message(player, LocaleMessage.SEND_CURRENT, targetServer.getServerInfo().getName());
+            message(player, LocaleMessage.SEND_CURRENT, Collections.singletonMap("server", info.getName()));
             break;
         case "all":
             getNeutron().getProxy().getAllPlayers().forEach(targetPlayer -> {
                 targetPlayer.createConnectionRequest(targetServer).fireAndForget();
-                message(targetPlayer, LocaleMessage.SEND_MESSAGE, targetServer.getServerInfo().getName());
+                message(targetPlayer, LocaleMessage.SEND_MESSAGE, Collections.singletonMap("server", info.getName()));
             });
 
-            message(source, LocaleMessage.SEND_ALL, targetServer.getServerInfo().getName());
+            message(source, LocaleMessage.SEND_ALL, Collections.singletonMap("server", info.getName()));
             break;
         default:
             Player targetPlayer = getNeutron().getProxy().getPlayer(context.get(0)).orElse(null);
-            assertNotNull(source, targetPlayer, LocaleMessage.UNKNOWN_PLAYER, context.get(0));
+            assertNotNull(source, targetPlayer, LocaleMessage.UNKNOWN_PLAYER,
+                          Collections.singletonMap("player", context.get(0)));
 
             targetPlayer.createConnectionRequest(targetServer).fireAndForget();
-            message(targetPlayer, LocaleMessage.SEND_MESSAGE, targetServer.getServerInfo().getName());
-            message(source, LocaleMessage.SEND_PLAYER, targetPlayer.getUsername(), targetServer.getServerInfo().getName());
+            message(targetPlayer, LocaleMessage.SEND_MESSAGE,
+                    Collections.singletonMap("server", info.getName()));
+            message(source, LocaleMessage.SEND_PLAYER, Map.of(
+                    "player", targetPlayer.getUsername(), "server", info.getName()));
             break;
         }
     }

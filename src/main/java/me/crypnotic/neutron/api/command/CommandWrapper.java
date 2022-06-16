@@ -36,6 +36,10 @@ import me.crypnotic.neutron.api.Neutron;
 import me.crypnotic.neutron.api.locale.LocaleMessage;
 import me.crypnotic.neutron.util.StringHelper;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ComponentLike;
+
+import java.util.Collections;
+import java.util.Map;
 
 public abstract class CommandWrapper implements SimpleCommand {
 
@@ -57,22 +61,42 @@ public abstract class CommandWrapper implements SimpleCommand {
 
     @SneakyThrows
     public void assertUsage(CommandSource source, boolean assertion) {
-        assertCustom(source, assertion, LocaleMessage.INVALID_USAGE, getUsage());
+        assertCustom(source, assertion, LocaleMessage.INVALID_USAGE, Collections.singletonMap("usage", getUsage()), Collections.emptyMap());
     }
 
     @SneakyThrows
-    public void assertPlayer(CommandSource source, LocaleMessage message, Object... values) {
-        assertCustom(source, source instanceof Player, message, values);
+    public void assertPlayer(CommandSource source, LocaleMessage message) {
+        assertCustom(source, source instanceof Player, message, Collections.emptyMap(), Collections.emptyMap());
     }
 
     @SneakyThrows
-    public void assertNull(CommandSource source, Object value, LocaleMessage message, Object... values) {
-        assertCustom(source, value == null, message, values);
+    public void assertPlayer(CommandSource source, LocaleMessage message, Map<String, String> stringReplacements) {
+        assertCustom(source, source instanceof Player, message, stringReplacements, Collections.emptyMap());
     }
 
     @SneakyThrows
-    public void assertNotNull(CommandSource source, Object value, LocaleMessage message, Object... values) {
-        assertCustom(source, value != null, message, values);
+    public void assertPlayer(CommandSource source, LocaleMessage message, Map<String, String> stringReplacements, Map<String, ComponentLike> componentReplacements) {
+        assertCustom(source, source instanceof Player, message, stringReplacements, componentReplacements);
+    }
+
+    @SneakyThrows
+    public void assertNull(CommandSource source, Object value, LocaleMessage message, Map<String, String> stringReplacements, Map<String, ComponentLike> componentReplacements) {
+        assertCustom(source, value == null, message, stringReplacements, componentReplacements);
+    }
+
+    @SneakyThrows
+    public void assertNotNull(CommandSource source, Object value, LocaleMessage message) {
+        assertCustom(source, value != null, message, Collections.emptyMap(), Collections.emptyMap());
+    }
+
+    @SneakyThrows
+    public void assertNotNull(CommandSource source, Object value, LocaleMessage message, Map<String, String> stringReplacements) {
+        assertCustom(source, value != null, message, stringReplacements, Collections.emptyMap());
+    }
+
+    @SneakyThrows
+    public void assertNotNull(CommandSource source, Object value, LocaleMessage message, Map<String, String> stringReplacements, Map<String, ComponentLike> componentReplacements) {
+        assertCustom(source, value != null, message, stringReplacements, componentReplacements);
     }
 
     @SneakyThrows
@@ -80,21 +104,41 @@ public abstract class CommandWrapper implements SimpleCommand {
         assertCustom(source, source.hasPermission(permission), LocaleMessage.NO_PERMISSION);
     }
 
+    public void assertCustom(CommandSource source, boolean assertion, LocaleMessage message) {
+        assertCustom(source, assertion, message, Collections.emptyMap(), Collections.emptyMap());
+    }
+
     @SneakyThrows
-    public void assertCustom(CommandSource source, boolean assertion, LocaleMessage message, Object... values) {
+    public void assertCustom(CommandSource source, boolean assertion, LocaleMessage message, Map<String, String> stringReplacements, Map<String, ComponentLike> componentReplacements) {
         if (!assertion) {
-            message(source, message, values);
+            message(source, message, stringReplacements, componentReplacements);
 
             throw new CommandExitException();
         }
     }
 
-    public void message(CommandSource source, LocaleMessage message, Object... values) {
-        StringHelper.message(source, message, values);
+    public void message(CommandSource source, LocaleMessage message) {
+        StringHelper.sendComponent(source, message, Collections.emptyMap(), Collections.emptyMap());
     }
 
-    public Component getMessage(CommandSource source, LocaleMessage message, Object... values) {
-        return StringHelper.getMessage(source, message, values);
+    public void message(CommandSource source, LocaleMessage message, Map<String, String> stringReplacements) {
+        StringHelper.sendComponent(source, message, stringReplacements, Collections.emptyMap());
+    }
+
+    public void message(CommandSource source, LocaleMessage message, Map<String, String> stringReplacements, Map<String, ComponentLike> componentReplacements) {
+        StringHelper.sendComponent(source, message, stringReplacements, componentReplacements);
+    }
+
+    public Component getMessage(CommandSource source, LocaleMessage message) {
+        return StringHelper.getComponent(source, message, Collections.emptyMap(), Collections.emptyMap());
+    }
+
+    public Component getMessage(CommandSource source, LocaleMessage message, Map<String, String> stringReplacements) {
+        return StringHelper.getComponent(source, message, stringReplacements, Collections.emptyMap());
+    }
+
+    public Component getMessage(CommandSource source, LocaleMessage message, Map<String, String> stringReplacements, Map<String, ComponentLike> componentReplacements) {
+        return StringHelper.getComponent(source, message, stringReplacements, componentReplacements);
     }
 
     public abstract void handle(CommandSource source, CommandContext context) throws CommandExitException;
