@@ -54,7 +54,7 @@ public class ServerListHandler {
 
         original.getFavicon().ifPresent(builder::favicon);
 
-        builder.description(StringHelper.miniMessage.deserialize(config.getMotd()));
+        builder.description(config.getMotd());
 
         switch (config.getPlayerCount().getAction()) {
         case CURRENT:

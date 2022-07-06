@@ -27,15 +27,19 @@ package me.crypnotic.neutron.manager;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.common.reflect.TypeToken;
 import lombok.RequiredArgsConstructor;
 import me.crypnotic.neutron.NeutronPlugin;
 import me.crypnotic.neutron.api.Reloadable;
 import me.crypnotic.neutron.api.StateResult;
 import me.crypnotic.neutron.api.configuration.Configuration;
 import me.crypnotic.neutron.api.module.Module;
+import me.crypnotic.neutron.api.serializer.ComponentSerializer;
 import me.crypnotic.neutron.module.command.CommandModule;
 import me.crypnotic.neutron.module.serverlist.ServerListModule;
+import net.kyori.adventure.text.Component;
 import ninja.leaping.configurate.ConfigurationNode;
+import ninja.leaping.configurate.objectmapping.serialize.TypeSerializers;
 
 @RequiredArgsConstructor
 public class ModuleManager implements Reloadable {
@@ -49,6 +53,8 @@ public class ModuleManager implements Reloadable {
     public StateResult init() {
         modules.put(CommandModule.class, new CommandModule());
         modules.put(ServerListModule.class, new ServerListModule());
+
+        registerSerializers();
 
         int enabled = 0;
         for (Module module : modules.values()) {
@@ -125,6 +131,10 @@ public class ModuleManager implements Reloadable {
         modules.values().stream().filter(Module::isEnabled).forEach(Module::shutdown);
 
         return StateResult.success();
+    }
+
+    private void registerSerializers() {
+        TypeSerializers.getDefaultSerializers().registerType(TypeToken.of(Component.class), new ComponentSerializer());
     }
 
     public StateResult save() {

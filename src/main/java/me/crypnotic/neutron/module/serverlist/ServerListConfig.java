@@ -27,6 +27,8 @@ package me.crypnotic.neutron.module.serverlist;
 import java.util.List;
 
 import lombok.Getter;
+import me.crypnotic.neutron.util.StringHelper;
+import net.kyori.adventure.text.Component;
 import ninja.leaping.configurate.objectmapping.Setting;
 import ninja.leaping.configurate.objectmapping.serialize.ConfigSerializable;
 
@@ -35,7 +37,7 @@ public class ServerListConfig {
 
     @Getter
     @Setting("motd")
-    private final String motd = "<gray>This velocity proxy is proudly powered by <aqua>Neutron";
+    private final Component motd = StringHelper.miniMessage.deserialize("<gray>This velocity proxy is proudly powered by <aqua>Neutron");
 
     @Getter
     @Setting("player-count")
