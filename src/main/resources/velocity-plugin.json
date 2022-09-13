@@ -3,6 +3,11 @@
   "name": "Neutron",
   "version": "@project.version@",
   "authors": ["Jim (NotKatuen)", "Crypnotic"],
-  "dependencies": [],
+  "dependencies": [
+    {
+      "id": "supervanishbridge",
+      "optional": true
+    }
+  ],
   "main": "me.crypnotic.neutron.NeutronPlugin"
 }

@@ -39,8 +39,6 @@ import me.crypnotic.neutron.api.command.CommandWrapper;
 import me.crypnotic.neutron.api.locale.LocaleMessage;
 import net.kyori.adventure.audience.MessageType;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.event.ClickEvent;
-import net.kyori.adventure.text.event.HoverEvent;
 
 public class GlistCommand extends CommandWrapper {
 
@@ -48,12 +46,20 @@ public class GlistCommand extends CommandWrapper {
     public void handle(CommandSource source, CommandContext context) {
         assertPermission(source, "neutron.command.glist");
 
+        long playerCount = getNeutron().getProxy().getAllPlayers().stream()
+                .filter(player -> !(source instanceof Player)
+                        || getNeutron().getSuperVanishBridgeHelper().canSee((Player) source, player))
+                .count();
+
         message(source, LocaleMessage.LIST_HEADER,
-                Collections.singletonMap("online", String.valueOf(getNeutron().getProxy().getPlayerCount())));
+                Collections.singletonMap("online", String.valueOf(playerCount)));
 
         for (RegisteredServer server : getNeutron().getProxy().getAllServers()) {
             ServerInfo info = server.getServerInfo();
-            Collection<Player> players = server.getPlayersConnected();
+            Collection<Player> players = server.getPlayersConnected().stream()
+                    .filter(player -> !(source instanceof Player)
+                            || getNeutron().getSuperVanishBridgeHelper().canSee((Player) source, player))
+                    .toList();
 
             String playerString = players.stream().map(Player::getUsername)
                     .sorted(String.CASE_INSENSITIVE_ORDER).collect(Collectors.joining(", "));

@@ -79,6 +79,12 @@ public abstract class CommandWrapper implements SimpleCommand {
         assertCustom(source, source instanceof Player, message, stringReplacements, componentReplacements);
     }
 
+    public void assertVisiblePlayer(CommandSource source, Player target, LocaleMessage message, Map<String, String> stringReplacements) {
+        boolean assertResult = !(source instanceof Player) || Neutron.getNeutron().getSuperVanishBridgeHelper()
+                .canSee((Player) source, target);
+        assertCustom(source, assertResult, message, stringReplacements, Collections.emptyMap());
+    }
+
     @SneakyThrows
     public void assertNull(CommandSource source, Object value, LocaleMessage message, Map<String, String> stringReplacements, Map<String, ComponentLike> componentReplacements) {
         assertCustom(source, value == null, message, stringReplacements, componentReplacements);

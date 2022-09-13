@@ -45,7 +45,9 @@ public class ServerListHandler {
     public void onServerListPing(ProxyPingEvent event) {
         ServerPing original = event.getPing();
 
-        int playerCount = module.getNeutron().getProxy().getPlayerCount();
+        int playerCount = (int) module.getNeutron().getProxy().getAllPlayers().stream()
+                .filter(player -> !module.getNeutron().getSuperVanishBridgeHelper().isVanished(player))
+                .count();
 
         Builder builder = ServerPing.builder();
 

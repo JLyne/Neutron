@@ -40,6 +40,7 @@ import me.crypnotic.neutron.api.configuration.Configuration;
 import me.crypnotic.neutron.event.StateHandler;
 import me.crypnotic.neutron.manager.ModuleManager;
 import me.crypnotic.neutron.manager.locale.LocaleManager;
+import uk.co.notnull.supervanishbridge.helper.SuperVanishBridgeHelper;
 
 public class NeutronPlugin {
 
@@ -64,6 +65,8 @@ public class NeutronPlugin {
     @Getter
     private ModuleManager moduleManager;
 
+    private SuperVanishBridgeHelper superVanishBridgeHelper;
+
     public NeutronPlugin() {
         Neutron.setNeutron(this);
     }
@@ -80,5 +83,10 @@ public class NeutronPlugin {
         stateHandler.init();
 
         proxy.getEventManager().register(this, new StateHandler(this));
+        superVanishBridgeHelper = new SuperVanishBridgeHelper(proxy);
+    }
+
+    public SuperVanishBridgeHelper getSuperVanishBridgeHelper() {
+        return superVanishBridgeHelper;
     }
 }

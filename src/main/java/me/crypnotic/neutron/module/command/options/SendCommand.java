@@ -35,6 +35,7 @@ import com.velocitypowered.api.proxy.ServerConnection;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
 
 import com.velocitypowered.api.proxy.server.ServerInfo;
+import me.crypnotic.neutron.api.Neutron;
 import me.crypnotic.neutron.api.command.CommandContext;
 import me.crypnotic.neutron.api.command.CommandWrapper;
 import me.crypnotic.neutron.api.locale.LocaleMessage;
@@ -77,6 +78,8 @@ public class SendCommand extends CommandWrapper {
             Player targetPlayer = getNeutron().getProxy().getPlayer(context.get(0)).orElse(null);
             assertNotNull(source, targetPlayer, LocaleMessage.UNKNOWN_PLAYER,
                           Collections.singletonMap("player", context.get(0)));
+            assertVisiblePlayer(source, targetPlayer, LocaleMessage.UNKNOWN_PLAYER,
+                                Collections.singletonMap("player", context.get(0)));
 
             targetPlayer.createConnectionRequest(targetServer).fireAndForget();
             message(targetPlayer, LocaleMessage.SEND_MESSAGE,
@@ -94,8 +97,8 @@ public class SendCommand extends CommandWrapper {
         if(arguments.length < 2) {
             String query = arguments.length == 1 ? arguments[0] : "";
 
-             List<String> result = getNeutron().getProxy().matchPlayer(query).stream().map(Player::getUsername)
-                    .collect(Collectors.toList());
+            List<String> result = Neutron.getNeutron().getSuperVanishBridgeHelper()
+                    .getUsernameSuggestions(query, invocation.source());
 
             /* Inject `current`/`all` subcommands */
             result.add("current");

@@ -27,12 +27,12 @@ package me.crypnotic.neutron.module.command.options;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ServerConnection;
 
+import me.crypnotic.neutron.api.Neutron;
 import me.crypnotic.neutron.api.command.CommandContext;
 import me.crypnotic.neutron.api.command.CommandWrapper;
 import me.crypnotic.neutron.api.locale.LocaleMessage;
@@ -46,6 +46,7 @@ public class FindCommand extends CommandWrapper {
 
         Player target = getNeutron().getProxy().getPlayer(context.get(0)).orElse(null);
         assertNotNull(source, target, LocaleMessage.UNKNOWN_PLAYER, Collections.singletonMap("player", context.get(0)));
+        assertVisiblePlayer(source, target, LocaleMessage.UNKNOWN_PLAYER, Collections.singletonMap("player", context.get(0)));
 
         ServerConnection server = target.getCurrentServer().get();
         /* We'll consider this offline as the Player is in a limbo state */
@@ -59,7 +60,7 @@ public class FindCommand extends CommandWrapper {
     public List<String> suggest(Invocation invocation) {
         String[] arguments = invocation.arguments();
         String query = arguments.length > 0 ? arguments[0] : "";
-        return getNeutron().getProxy().matchPlayer(query).stream().map(Player::getUsername).collect(Collectors.toList());
+        return Neutron.getNeutron().getSuperVanishBridgeHelper().getUsernameSuggestions(query, invocation.source());
     }
 
     @Override
