@@ -25,8 +25,8 @@ group 'uk.co.notnull'
 version '3.0.0-SNAPSHOT'
 description 'An open-source essential suite for the Velocity proxy'
 
-java.sourceCompatibility = JavaVersion.VERSION_11
-java.targetCompatibility = JavaVersion.VERSION_11
+java.sourceCompatibility = JavaVersion.VERSION_17
+java.targetCompatibility = JavaVersion.VERSION_17
 
 tasks {
     processResources {
