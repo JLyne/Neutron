@@ -2,7 +2,7 @@
   "id": "neutron",
   "name": "Neutron",
   "version": "${version}",
-  "authors": ["Jim (NotKatuen)", "Crypnotic"],
+  "authors": ["Jim (AnEnragedPigeon)", "Crypnotic"],
   "dependencies": [
     {
       "id": "supervanishbridge",
