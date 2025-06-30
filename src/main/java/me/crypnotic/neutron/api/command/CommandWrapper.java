@@ -28,9 +28,6 @@ import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.command.SimpleCommand;
 import com.velocitypowered.api.proxy.Player;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.SneakyThrows;
 import me.crypnotic.neutron.NeutronPlugin;
 import me.crypnotic.neutron.api.Neutron;
 import me.crypnotic.neutron.api.locale.LocaleMessage;
@@ -42,12 +39,7 @@ import java.util.Collections;
 import java.util.Map;
 
 public abstract class CommandWrapper implements SimpleCommand {
-
-    @Getter
-    @Setter
     private boolean enabled;
-    @Getter
-    @Setter
     private String[] aliases;
 
     @Override
@@ -59,53 +51,28 @@ public abstract class CommandWrapper implements SimpleCommand {
         }
     }
 
-    @SneakyThrows
     public void assertUsage(CommandSource source, boolean assertion) {
         assertCustom(source, assertion, LocaleMessage.INVALID_USAGE, Collections.singletonMap("usage", getUsage()), Collections.emptyMap());
     }
 
-    @SneakyThrows
     public void assertPlayer(CommandSource source, LocaleMessage message) {
         assertCustom(source, source instanceof Player, message, Collections.emptyMap(), Collections.emptyMap());
     }
 
-    @SneakyThrows
-    public void assertPlayer(CommandSource source, LocaleMessage message, Map<String, String> stringReplacements) {
-        assertCustom(source, source instanceof Player, message, stringReplacements, Collections.emptyMap());
-    }
-
-    @SneakyThrows
-    public void assertPlayer(CommandSource source, LocaleMessage message, Map<String, String> stringReplacements, Map<String, ComponentLike> componentReplacements) {
-        assertCustom(source, source instanceof Player, message, stringReplacements, componentReplacements);
-    }
-
     public void assertVisiblePlayer(CommandSource source, Player target, LocaleMessage message, Map<String, String> stringReplacements) {
-        boolean assertResult = !(source instanceof Player) || Neutron.getNeutron().getSuperVanishBridgeHelper()
+        boolean assertResult = !(source instanceof Player) || Neutron.getNeutron().getVanishBridgeHelper()
                 .canSee((Player) source, target);
         assertCustom(source, assertResult, message, stringReplacements, Collections.emptyMap());
     }
 
-    @SneakyThrows
-    public void assertNull(CommandSource source, Object value, LocaleMessage message, Map<String, String> stringReplacements, Map<String, ComponentLike> componentReplacements) {
-        assertCustom(source, value == null, message, stringReplacements, componentReplacements);
-    }
-
-    @SneakyThrows
     public void assertNotNull(CommandSource source, Object value, LocaleMessage message) {
         assertCustom(source, value != null, message, Collections.emptyMap(), Collections.emptyMap());
     }
 
-    @SneakyThrows
     public void assertNotNull(CommandSource source, Object value, LocaleMessage message, Map<String, String> stringReplacements) {
         assertCustom(source, value != null, message, stringReplacements, Collections.emptyMap());
     }
 
-    @SneakyThrows
-    public void assertNotNull(CommandSource source, Object value, LocaleMessage message, Map<String, String> stringReplacements, Map<String, ComponentLike> componentReplacements) {
-        assertCustom(source, value != null, message, stringReplacements, componentReplacements);
-    }
-
-    @SneakyThrows
     public void assertPermission(CommandSource source, String permission) {
         assertCustom(source, source.hasPermission(permission), LocaleMessage.NO_PERMISSION);
     }
@@ -114,7 +81,6 @@ public abstract class CommandWrapper implements SimpleCommand {
         assertCustom(source, assertion, message, Collections.emptyMap(), Collections.emptyMap());
     }
 
-    @SneakyThrows
     public void assertCustom(CommandSource source, boolean assertion, LocaleMessage message, Map<String, String> stringReplacements, Map<String, ComponentLike> componentReplacements) {
         if (!assertion) {
             message(source, message, stringReplacements, componentReplacements);
@@ -135,14 +101,6 @@ public abstract class CommandWrapper implements SimpleCommand {
         StringHelper.sendComponent(source, message, stringReplacements, componentReplacements);
     }
 
-    public Component getMessage(CommandSource source, LocaleMessage message) {
-        return StringHelper.getComponent(source, message, Collections.emptyMap(), Collections.emptyMap());
-    }
-
-    public Component getMessage(CommandSource source, LocaleMessage message, Map<String, String> stringReplacements) {
-        return StringHelper.getComponent(source, message, stringReplacements, Collections.emptyMap());
-    }
-
     public Component getMessage(CommandSource source, LocaleMessage message, Map<String, String> stringReplacements, Map<String, ComponentLike> componentReplacements) {
         return StringHelper.getComponent(source, message, stringReplacements, componentReplacements);
     }
@@ -151,11 +109,27 @@ public abstract class CommandWrapper implements SimpleCommand {
 
     public abstract String getUsage();
 
-    public class CommandExitException extends Exception {
+    public static class CommandExitException extends RuntimeException {
         private static final long serialVersionUID = -1299193476106186693L;
     }
 
     public NeutronPlugin getNeutron() {
         return Neutron.getNeutron();
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public String[] getAliases() {
+        return aliases;
+    }
+
+    public void setAliases(String[] aliases) {
+        this.aliases = aliases;
     }
 }

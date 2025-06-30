@@ -24,10 +24,6 @@
 */
 package me.crypnotic.neutron.api.locale;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-
-@RequiredArgsConstructor
 public enum LocaleMessage {
     FIND_MESSAGE("<aqua><player> <gray>is connected to <aqua><server>"),
 
@@ -58,16 +54,18 @@ public enum LocaleMessage {
     UNKNOWN_PLAYER("<red>Unknown player: <player>"),
     UNKNOWN_SERVER("<red>Unknown server: <server>");
 
-    @Getter
     private final String defaultMessage;
-    @Getter
     private final String name = toString().toLowerCase();
 
-    public static LocaleMessage match(String key) {
-        try {
-            return LocaleMessage.valueOf(key.toUpperCase());
-        } catch (IllegalArgumentException exception) {
-            return null;
-        }
+    LocaleMessage(String defaultMessage) {
+        this.defaultMessage = defaultMessage;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDefaultMessage() {
+        return defaultMessage;
     }
 }

@@ -34,7 +34,6 @@ import me.crypnotic.neutron.api.Neutron;
 import me.crypnotic.neutron.api.locale.LocaleMessage;
 import me.crypnotic.neutron.api.locale.LocaleMessageTable;
 import me.crypnotic.neutron.manager.locale.LocaleManager;
-import net.kyori.adventure.audience.MessageType;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -83,7 +82,7 @@ public class StringHelper {
     }
 
     public static void sendComponent(CommandSource source, LocaleMessage message, Map<String, String> stringReplacements, Map<String, ComponentLike> componentReplacements) {
-        source.sendMessage(getComponent(source, message, stringReplacements, componentReplacements), MessageType.SYSTEM);
+        source.sendMessage(getComponent(source, message, stringReplacements, componentReplacements));
     }
 
     public static Component getComponent(CommandSource source, LocaleMessage message, Map<String, String> stringReplacements, Map<String, ComponentLike> componentReplacements) {

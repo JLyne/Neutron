@@ -33,25 +33,27 @@ import com.velocitypowered.api.proxy.server.ServerPing;
 import com.velocitypowered.api.proxy.server.ServerPing.Players;
 import com.velocitypowered.api.scheduler.ScheduledTask;
 
-import lombok.Getter;
 import me.crypnotic.neutron.api.StateResult;
 import me.crypnotic.neutron.api.module.Module;
 import me.crypnotic.neutron.module.serverlist.ServerListConfig.PlayerCount;
-import me.crypnotic.neutron.util.ConfigHelper;
+import org.spongepowered.configurate.ConfigurationNode;
+import org.spongepowered.configurate.serialize.SerializationException;
 
 public class ServerListModule extends Module {
-
-    @Getter
-    private ServerListConfig config;
-    private ScheduledTask pingTask;
+	private ScheduledTask pingTask;
     private ServerListHandler handler;
-    @Getter
     private int maxPlayerPing;
 
     @Override
     public StateResult init() {
-        this.config = ConfigHelper.getSerializable(getRootNode(), new ServerListConfig());
-        if (config == null) {
+		ServerListConfig config = null;
+		try {
+			config = getRootNode().get(ServerListConfig.class);
+		} catch (SerializationException e) {
+			throw new RuntimeException(e);
+		}
+
+		if (config == null) {
             return StateResult.fail();
         }
 
@@ -67,7 +69,7 @@ public class ServerListModule extends Module {
     }
 
     @Override
-    public StateResult reload() {
+    public StateResult reload(ConfigurationNode configuration) {
         return StateResult.of(shutdown(), init());
     }
 
@@ -108,5 +110,9 @@ public class ServerListModule extends Module {
             maxPlayerPing = buffer;
             buffer = 0;
         }
+    }
+
+    public int getMaxPlayerPing() {
+        return maxPlayerPing;
     }
 }

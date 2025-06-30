@@ -24,11 +24,13 @@
 */
 package me.crypnotic.neutron.api;
 
+import org.spongepowered.configurate.ConfigurationNode;
+
 public interface Reloadable {
 
     StateResult init();
     
-    StateResult reload();
+    StateResult reload(ConfigurationNode configuration);
     
     StateResult shutdown();
     

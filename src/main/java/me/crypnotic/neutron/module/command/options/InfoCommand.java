@@ -66,6 +66,6 @@ public class InfoCommand extends CommandWrapper {
     public List<String> suggest(Invocation invocation) {
         String[] arguments = invocation.arguments();
         String query = arguments.length > 0 ? arguments[0] : "";
-        return Neutron.getNeutron().getSuperVanishBridgeHelper().getUsernameSuggestions(query, invocation.source());
+        return Neutron.getNeutron().getVanishBridgeHelper().getUsernameSuggestions(query, invocation.source());
     }
 }

@@ -28,16 +28,19 @@ import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.proxy.ProxyReloadEvent;
 import com.velocitypowered.api.event.proxy.ProxyShutdownEvent;
 
-import lombok.RequiredArgsConstructor;
 import me.crypnotic.neutron.NeutronPlugin;
 import me.crypnotic.neutron.api.Reloadable;
+import org.spongepowered.configurate.ConfigurateException;
+import org.spongepowered.configurate.ConfigurationNode;
 
 import java.util.Collections;
 
-@RequiredArgsConstructor
 public class StateHandler {
-
     private final NeutronPlugin neutron;
+
+    public StateHandler(NeutronPlugin neutron) {
+        this.neutron = neutron;
+    }
 
     public void init() {
         init(neutron.getLocaleManager());
@@ -46,8 +49,13 @@ public class StateHandler {
 
     @Subscribe
     public void onProxyReload(ProxyReloadEvent event) {
-        reload(neutron.getLocaleManager());
-        reload(neutron.getModuleManager());
+		try {
+		    ConfigurationNode configuration = neutron.loadConfig();
+            reload(neutron.getLocaleManager(), configuration);
+            reload(neutron.getModuleManager(), configuration);
+		} catch (ConfigurateException e) {
+			neutron.getLogger().warn("Failed to reload config on proxy reload", e);
+		}
     }
 
     @Subscribe
@@ -61,8 +69,8 @@ public class StateHandler {
                                Collections.singletonMap("module", reloadable.getName()));
     }
 
-    private void reload(Reloadable reloadable) {
-        reloadable.reload().fail("Failed to reload <module>. Many features may not work",
+    private void reload(Reloadable reloadable, ConfigurationNode configuration) {
+        reloadable.reload(configuration).fail("Failed to reload <module>. Many features may not work",
                                  Collections.singletonMap("module",  reloadable.getName()));
     }
 

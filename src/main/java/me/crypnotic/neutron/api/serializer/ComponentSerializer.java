@@ -24,29 +24,28 @@
 */
 package me.crypnotic.neutron.api.serializer;
 
-import com.google.common.reflect.TypeToken;
-
 import me.crypnotic.neutron.util.StringHelper;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import ninja.leaping.configurate.ConfigurationNode;
-import ninja.leaping.configurate.objectmapping.ObjectMappingException;
-import ninja.leaping.configurate.objectmapping.serialize.TypeSerializer;
+import org.spongepowered.configurate.ConfigurationNode;
+import org.spongepowered.configurate.serialize.SerializationException;
+import org.spongepowered.configurate.serialize.TypeSerializer;
+
+import java.lang.reflect.Type;
 
 public class ComponentSerializer implements TypeSerializer<Component> {
-
     @Override
-    public Component deserialize(TypeToken<?> type, ConfigurationNode value) throws ObjectMappingException {
-        if (!value.isVirtual()) {
+    public Component deserialize(Type type, ConfigurationNode value) {
+        if (!value.virtual()) {
             return StringHelper.formatComponent(value.getString());
         }
         return null;
     }
 
     @Override
-    public void serialize(TypeToken<?> type, Component obj, ConfigurationNode value) throws ObjectMappingException {
+    public void serialize(Type type, Component obj, ConfigurationNode value) throws SerializationException {
         if (obj != null) {
-            value.setValue(LegacyComponentSerializer.legacyAmpersand().serialize(obj));
+            value.set(LegacyComponentSerializer.legacyAmpersand().serialize(obj));
         }
     }
 }

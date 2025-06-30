@@ -29,32 +29,38 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import me.crypnotic.neutron.NeutronPlugin;
 import me.crypnotic.neutron.api.Reloadable;
 import me.crypnotic.neutron.api.StateResult;
-import me.crypnotic.neutron.api.configuration.Configuration;
 import me.crypnotic.neutron.api.locale.LocaleMessageTable;
-import me.crypnotic.neutron.util.ConfigHelper;
 import me.crypnotic.neutron.util.FileHelper;
+import org.spongepowered.configurate.ConfigurateException;
+import org.spongepowered.configurate.ConfigurationNode;
+import org.spongepowered.configurate.serialize.SerializationException;
 
-@RequiredArgsConstructor
 public class LocaleManager implements Reloadable {
-
     private final NeutronPlugin neutron;
-    private final Configuration configuration;
+    private final ConfigurationNode configuration;
 
     private LocaleConfig config;
     private File folder;
     private final Map<Locale, LocaleMessageTable> locales = new HashMap<>();
-    @Getter
     private Locale defaultLocale;
+
+    public LocaleManager(NeutronPlugin neutron, ConfigurationNode configuration) {
+        this.neutron = neutron;
+        this.configuration = configuration;
+    }
 
     @Override
     public StateResult init() {
-        this.config = ConfigHelper.getSerializable(configuration.getNode("locale"), new LocaleConfig());
-        if (config == null) {
+		try {
+			this.config = configuration.node("locale").get(LocaleConfig.class);
+		} catch (SerializationException e) {
+			throw new RuntimeException(e);
+		}
+
+		if (config == null) {
             return StateResult.fail();
         }
 
@@ -73,10 +79,14 @@ public class LocaleManager implements Reloadable {
         }
 
         for (File file : folder.listFiles()) {
-            LocaleMessageTable.load(file).ifPresent(table -> locales.put(table.getLocale(), table));
+            try {
+                LocaleMessageTable.load(file).ifPresent(table -> locales.put(table.getLocale(), table));
+            } catch (ConfigurateException e) {
+                neutron.getLogger().warn("Failed to load locale file {}", file.getName(), e);
+            }
         }
 
-        neutron.getLogger().info("Locales loaded: " + locales.size());
+		neutron.getLogger().info("Locales loaded: {}", locales.size());
 
         return StateResult.success();
     }
@@ -98,17 +108,22 @@ public class LocaleManager implements Reloadable {
         if (defaultLocale != null) {
             File defaultLocaleFile = FileHelper.getOrCreateLocale(folder.toPath(), fallbackLocaleName + ".conf");
             if (defaultLocaleFile != null) {
-                LocaleMessageTable.load(defaultLocaleFile).ifPresent(table -> locales.put(table.getLocale(), table));
+                try {
+                    LocaleMessageTable.load(defaultLocaleFile).ifPresent(
+                            table -> locales.put(table.getLocale(), table));
+                } catch (ConfigurateException e) {
+                    neutron.getLogger().warn("Failed to load fallback locale", e);
+                }
 
-                neutron.getLogger().info("Loaded fallback locale: " + fallbackLocaleName);
+				neutron.getLogger().info("Loaded fallback locale: {}", fallbackLocaleName);
 
                 return;
             } else {
-                neutron.getLogger().warn("Could not find file for locale: " + fallbackLocaleName);
+				neutron.getLogger().warn("Could not find file for locale: {}", fallbackLocaleName);
                 neutron.getLogger().warn("Falling back to en_US");
             }
         } else {
-            neutron.getLogger().warn("Unknown fallback locale specified: " + fallbackLocaleName);
+			neutron.getLogger().warn("Unknown fallback locale specified: {}", fallbackLocaleName);
             neutron.getLogger().warn("Falling back to en_US");
         }
 
@@ -117,7 +132,7 @@ public class LocaleManager implements Reloadable {
     }
 
     @Override
-    public StateResult reload() {
+    public StateResult reload(ConfigurationNode configuration) {
         return StateResult.of(shutdown(), init());
     }
 
@@ -131,5 +146,9 @@ public class LocaleManager implements Reloadable {
     @Override
     public String getName() {
         return "LocaleManager";
+    }
+
+    public Locale getDefaultLocale() {
+        return defaultLocale;
     }
 }

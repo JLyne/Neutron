@@ -37,7 +37,6 @@ import com.velocitypowered.api.proxy.server.ServerInfo;
 import me.crypnotic.neutron.api.command.CommandContext;
 import me.crypnotic.neutron.api.command.CommandWrapper;
 import me.crypnotic.neutron.api.locale.LocaleMessage;
-import net.kyori.adventure.audience.MessageType;
 import net.kyori.adventure.text.Component;
 
 public class GlistCommand extends CommandWrapper {
@@ -48,7 +47,7 @@ public class GlistCommand extends CommandWrapper {
 
         long playerCount = getNeutron().getProxy().getAllPlayers().stream()
                 .filter(player -> !(source instanceof Player)
-                        || getNeutron().getSuperVanishBridgeHelper().canSee((Player) source, player))
+                        || getNeutron().getVanishBridgeHelper().canSee((Player) source, player))
                 .count();
 
         message(source, LocaleMessage.LIST_HEADER,
@@ -58,7 +57,7 @@ public class GlistCommand extends CommandWrapper {
             ServerInfo info = server.getServerInfo();
             Collection<Player> players = server.getPlayersConnected().stream()
                     .filter(player -> !(source instanceof Player)
-                            || getNeutron().getSuperVanishBridgeHelper().canSee((Player) source, player))
+                            || getNeutron().getVanishBridgeHelper().canSee((Player) source, player))
                     .toList();
 
             String playerString = players.stream().map(Player::getUsername)
@@ -71,7 +70,7 @@ public class GlistCommand extends CommandWrapper {
                                                    "players", playerString),
                                            Collections.emptyMap());
 
-            source.sendMessage(message, MessageType.SYSTEM);
+            source.sendMessage(message);
         }
     }
 

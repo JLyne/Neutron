@@ -26,40 +26,50 @@ package me.crypnotic.neutron.module.serverlist;
 
 import java.util.List;
 
-import lombok.Getter;
 import me.crypnotic.neutron.util.StringHelper;
 import net.kyori.adventure.text.Component;
-import ninja.leaping.configurate.objectmapping.Setting;
-import ninja.leaping.configurate.objectmapping.serialize.ConfigSerializable;
+import org.spongepowered.configurate.objectmapping.meta.Comment;
+import org.spongepowered.configurate.objectmapping.meta.Setting;
+import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
 @ConfigSerializable
 public class ServerListConfig {
-
-    @Getter
     @Setting("motd")
     private final Component motd = StringHelper.miniMessage.deserialize("<gray>This velocity proxy is proudly powered by <aqua>Neutron");
 
-    @Getter
     @Setting("player-count")
     private final PlayerCount playerCount = new PlayerCount();
 
-    @Getter
     @Setting("server-preview")
     private final ServerPreview serverPreview = new ServerPreview();
 
+    public Component getMotd() {
+        return motd;
+    }
+
+    public PlayerCount getPlayerCount() {
+        return playerCount;
+    }
+
+    public ServerPreview getServerPreview() {
+        return serverPreview;
+    }
+
     @ConfigSerializable
     public static class PlayerCount {
-
-        @Getter
-        @Setting(value = "action", comment = "      # The server list player count has three different actions:\r\n" + "        # \r\n"
-                + "        # CURRENT - player count matches the number of players online\r\n"
-                + "        # ONEMORE - player count shows the number of players online plus 1 \r\n"
-                + "        # PING - player count shows the sum of all backend servers' max player counts. Cached every 5 minutes\r\n"
-                + "        # STATIC - player count will always be the number defined under `player-count`\r\n" + "        #\r\n"
-                + "        # `player-count` is only used with the STATIC player count type")
+        @Setting(value = "action")
+        @Comment(value = """
+				      # The server list player count has three different actions:\r
+				        # \r
+				        # CURRENT - player count matches the number of players online\r
+				        # ONEMORE - player count shows the number of players online plus 1 \r
+				        # PING - player count shows the sum of all backend servers' max player counts. Cached every 5 minutes\r
+				        # STATIC - player count will always be the number defined under `player-count`\r
+				        #\r
+				        # `player-count` is only used with the STATIC player count type\
+				""")
         private final PlayerCountAction action = PlayerCountAction.STATIC;
 
-        @Getter
         @Setting("player-count")
         private final int maxPlayerCount = 500;
 
@@ -69,19 +79,30 @@ public class ServerListConfig {
             PING,
             STATIC
         }
+
+        public int getMaxPlayerCount() {
+            return maxPlayerCount;
+        }
+
+        public PlayerCountAction getAction() {
+            return action;
+        }
     }
 
     @ConfigSerializable
     public static class ServerPreview {
-
-        @Getter
-        @Setting(value = "action", comment = "      # The server list preview has three different actions:\r\n" + "        # \r\n"
-                + "        # MESSAGE - preview will show the messages defined under `messages`\r\n"
-                + "        # PLAYERS - preview matches the vanilla server preview of showing online players\r\n"
-                + "        # EMPTY - preview is empty\r\n" + "        #\r\n" + "        # `messages` is only used with the MESSAGE preview type")
+        @Setting(value = "action")
+        @Comment(value = """
+				      # The server list preview has three different actions:\r
+				        # \r
+				        # MESSAGE - preview will show the messages defined under `messages`\r
+				        # PLAYERS - preview matches the vanilla server preview of showing online players\r
+				        # EMPTY - preview is empty\r
+				        #\r
+				        # `messages` is only used with the MESSAGE preview type\
+				""")
         private final ServerPreviewAction action = ServerPreviewAction.MESSAGE;
 
-        @Getter
         @Setting("messages")
         private final List<String> messages = List.of("&7Powered by a &bNeutron");
 
@@ -89,6 +110,14 @@ public class ServerListConfig {
             EMPTY,
             MESSAGE,
             PLAYERS
+        }
+
+        public ServerPreviewAction getAction() {
+            return action;
+        }
+
+        public List<String> getMessages() {
+            return messages;
         }
     }
 }

@@ -32,21 +32,23 @@ import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.server.ServerPing;
 import com.velocitypowered.api.proxy.server.ServerPing.Builder;
 
-import lombok.RequiredArgsConstructor;
 import me.crypnotic.neutron.util.StringHelper;
 
-@RequiredArgsConstructor
 public class ServerListHandler {
-
     private final ServerListModule module;
     private final ServerListConfig config;
+
+    public ServerListHandler(ServerListModule module, ServerListConfig config) {
+        this.module = module;
+        this.config = config;
+    }
 
     @Subscribe
     public void onServerListPing(ProxyPingEvent event) {
         ServerPing original = event.getPing();
 
         int playerCount = (int) module.getNeutron().getProxy().getAllPlayers().stream()
-                .filter(player -> !module.getNeutron().getSuperVanishBridgeHelper().isVanished(player))
+                .filter(player -> !module.getNeutron().getVanishBridgeHelper().isVanished(player))
                 .count();
 
         Builder builder = ServerPing.builder();

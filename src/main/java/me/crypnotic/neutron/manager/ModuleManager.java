@@ -27,49 +27,44 @@ package me.crypnotic.neutron.manager;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.google.common.reflect.TypeToken;
-import lombok.RequiredArgsConstructor;
 import me.crypnotic.neutron.NeutronPlugin;
 import me.crypnotic.neutron.api.Reloadable;
 import me.crypnotic.neutron.api.StateResult;
-import me.crypnotic.neutron.api.configuration.Configuration;
 import me.crypnotic.neutron.api.module.Module;
-import me.crypnotic.neutron.api.serializer.ComponentSerializer;
 import me.crypnotic.neutron.module.command.CommandModule;
 import me.crypnotic.neutron.module.serverlist.ServerListModule;
-import net.kyori.adventure.text.Component;
-import ninja.leaping.configurate.ConfigurationNode;
-import ninja.leaping.configurate.objectmapping.serialize.TypeSerializers;
+import org.spongepowered.configurate.ConfigurationNode;
 
-@RequiredArgsConstructor
 public class ModuleManager implements Reloadable {
-
     private final NeutronPlugin neutron;
-    private final Configuration configuration;
+    private ConfigurationNode configuration;
 
     private final Map<Class<? extends Module>, Module> modules = new HashMap<>();
+
+    public ModuleManager(NeutronPlugin neutron, ConfigurationNode configuration) {
+        this.neutron = neutron;
+        this.configuration = configuration;
+    }
 
     @Override
     public StateResult init() {
         modules.put(CommandModule.class, new CommandModule());
         modules.put(ServerListModule.class, new ServerListModule());
 
-        registerSerializers();
-
         int enabled = 0;
         for (Module module : modules.values()) {
-            ConfigurationNode node = configuration.getNode(module.getName());
-            if (node.isVirtual()) {
-                neutron.getLogger().warn("Failed to load module: " + module.getName());
+            ConfigurationNode node = configuration.node(module.getName());
+            if (node.virtual()) {
+				neutron.getLogger().warn("Failed to load module: {}", module.getName());
                 continue;
             }
 
-            module.setEnabled(node.getNode("enabled").getBoolean());
+            module.setEnabled(node.node("enabled").getBoolean());
             if (module.isEnabled()) {
                 if (module.init().isSuccess()) {
                     enabled += 1;
                 } else {
-                    neutron.getLogger().warn("Module failed to initialize: " + module.getName());
+					neutron.getLogger().warn("Module failed to initialize: {}", module.getName());
 
                     module.setEnabled(false);
                 }
@@ -79,28 +74,26 @@ public class ModuleManager implements Reloadable {
         neutron.getProxy().getEventManager().register(neutron, this);
 
         // Save configuration after all modules load in order to copy default values
-        configuration.save();
+//        configuration.save();
 
-        neutron.getLogger().info(String.format("Modules loaded: %d (enabled: %d)", modules.size(), enabled));
+        neutron.getLogger().info("Modules loaded: {} (enabled: {})", modules.size(), enabled);
 
         return StateResult.success();
     }
 
     @Override
-    public StateResult reload() {
-        if (!configuration.reload()) {
-            neutron.getLogger().warn("Failed to reload config on proxy reload");
-        }
+    public StateResult reload(ConfigurationNode configuration) {
+        this.configuration = configuration;
 
         int enabled = 0;
         for (Module module : modules.values()) {
-            ConfigurationNode node = configuration.getNode(module.getName());
-            if (node.isVirtual()) {
-                neutron.getLogger().warn("Failed to reload module: " + module.getName());
+            ConfigurationNode node = configuration.node(module.getName());
+            if (node.virtual()) {
+				neutron.getLogger().warn("Failed to reload module: {}", module.getName());
                 continue;
             }
 
-            boolean newState = node.getNode("enabled").getBoolean();
+            boolean newState = node.node("enabled").getBoolean();
 
             if (module.isEnabled() && !newState) {
                 module.shutdown();
@@ -109,17 +102,17 @@ public class ModuleManager implements Reloadable {
             } else if (newState) {
                 module.setEnabled(newState);
 
-                if (module.reload().isSuccess()) {
+                if (module.reload(configuration).isSuccess()) {
                     enabled += 1;
                 } else {
-                    neutron.getLogger().warn("Module failed to reload: " + module.getName());
+					neutron.getLogger().warn("Module failed to reload: {}", module.getName());
 
                     module.setEnabled(false);
                 }
             }
         }
 
-        neutron.getLogger().info(String.format("Modules reloaded: %d (enabled: %d)", modules.size(), enabled));
+        neutron.getLogger().info("Modules reloaded: {} (enabled: {})", modules.size(), enabled);
 
         return StateResult.success();
     }
@@ -133,20 +126,8 @@ public class ModuleManager implements Reloadable {
         return StateResult.success();
     }
 
-    private void registerSerializers() {
-        TypeSerializers.getDefaultSerializers().registerType(TypeToken.of(Component.class), new ComponentSerializer());
-    }
-
-    public StateResult save() {
-        return StateResult.of(configuration.save());
-    }
-
-    public <T extends Module> T get(Class<T> clazz) {
-        return clazz.cast(modules.get(clazz));
-    }
-
     public ConfigurationNode getRoot() {
-        return configuration.getNode();
+        return configuration.node();
     }
 
     @Override

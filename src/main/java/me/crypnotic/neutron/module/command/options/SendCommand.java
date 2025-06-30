@@ -97,7 +97,7 @@ public class SendCommand extends CommandWrapper {
         if(arguments.length < 2) {
             String query = arguments.length == 1 ? arguments[0] : "";
 
-            List<String> result = Neutron.getNeutron().getSuperVanishBridgeHelper()
+            List<String> result = Neutron.getNeutron().getVanishBridgeHelper()
                     .getUsernameSuggestions(query, invocation.source());
 
             /* Inject `current`/`all` subcommands */

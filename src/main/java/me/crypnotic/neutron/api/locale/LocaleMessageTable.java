@@ -30,40 +30,41 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import me.crypnotic.neutron.api.Neutron;
-import me.crypnotic.neutron.api.configuration.Configuration;
+import org.spongepowered.configurate.ConfigurateException;
+import org.spongepowered.configurate.ConfigurationNode;
+import org.spongepowered.configurate.hocon.HoconConfigurationLoader;
 
-@RequiredArgsConstructor
 public class LocaleMessageTable {
-
-    @Getter
     private final Locale locale;
     private final Map<LocaleMessage, String> messages = new HashMap<>();
+
+    public LocaleMessageTable(Locale locale) {
+        this.locale = locale;
+    }
 
     public String get(LocaleMessage key) {
         return messages.getOrDefault(key, key.getDefaultMessage());
     }
 
-    public boolean set(LocaleMessage key, String message) {
-        /* Return true if no entry existed previously */
-        return messages.put(key, message) == null;
+    public void set(LocaleMessage key, String message) {
+        messages.put(key, message);
     }
 
-    public static Optional<LocaleMessageTable> load(File file) {
-        Configuration configuration = Configuration.builder().folder(file.getParentFile().toPath()).name(file.getName()).build();
+    public static Optional<LocaleMessageTable> load(File file) throws ConfigurateException {
+        ConfigurationNode configuration = HoconConfigurationLoader.builder().file(
+                new File(file.getParentFile(), file.getName())).build().load();
 
         String name = file.getName().split("\\.")[0];
         Locale locale = Locale.forLanguageTag(name);
         if (locale == null) {
-            Neutron.getNeutron().getLogger().warn("Unknown locale attempted to load: " + name);
+			Neutron.getNeutron().getLogger().warn("Unknown locale attempted to load: {}", name);
             return Optional.empty();
         }
 
         LocaleMessageTable table = new LocaleMessageTable(locale);
         for (LocaleMessage message : LocaleMessage.values()) {
-            String text = configuration.getNode(message.getName()).getString(message.getDefaultMessage());
+            String text = configuration.node(message.getName()).getString(message.getDefaultMessage());
             if (text == null || text.isEmpty()) {
                 text = message.getDefaultMessage();
             }
@@ -72,5 +73,9 @@ public class LocaleMessageTable {
         }
         
         return Optional.of(table);
+    }
+
+    public Locale getLocale() {
+        return locale;
     }
 }

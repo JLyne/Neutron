@@ -24,8 +24,11 @@
 */
 package me.crypnotic.neutron;
 
+import java.io.File;
 import java.nio.file.Path;
 
+import me.crypnotic.neutron.api.serializer.ComponentSerializer;
+import net.kyori.adventure.text.Component;
 import org.slf4j.Logger;
 
 import com.google.inject.Inject;
@@ -34,38 +37,30 @@ import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ProxyServer;
 
-import lombok.Getter;
 import me.crypnotic.neutron.api.Neutron;
-import me.crypnotic.neutron.api.configuration.Configuration;
 import me.crypnotic.neutron.event.StateHandler;
 import me.crypnotic.neutron.manager.ModuleManager;
 import me.crypnotic.neutron.manager.locale.LocaleManager;
-import uk.co.notnull.supervanishbridge.helper.SuperVanishBridgeHelper;
+import org.spongepowered.configurate.ConfigurateException;
+import org.spongepowered.configurate.ConfigurationNode;
+import org.spongepowered.configurate.hocon.HoconConfigurationLoader;
 
-public class NeutronPlugin {
+import uk.co.notnull.vanishbridge.helper.VanishBridgeHelper;
 
+public final class NeutronPlugin {
     @Inject
-    @Getter
     private ProxyServer proxy;
     @Inject
-    @Getter
     private Logger logger;
     @Inject
     @DataDirectory
-    @Getter
     private Path dataFolderPath;
 
-    @Getter
-    private Configuration configuration;
+	private LocaleManager localeManager;
 
-    private StateHandler stateHandler;
-
-    @Getter
-    private LocaleManager localeManager;
-    @Getter
     private ModuleManager moduleManager;
 
-    private SuperVanishBridgeHelper superVanishBridgeHelper;
+    private VanishBridgeHelper superVanishBridgeHelper;
 
     public NeutronPlugin() {
         Neutron.setNeutron(this);
@@ -73,9 +68,16 @@ public class NeutronPlugin {
 
     @Subscribe
     public void onProxyInitialize(ProxyInitializeEvent event) {
-        this.configuration = Configuration.builder().folder(dataFolderPath).name("config.conf").build();
+		ConfigurationNode configuration;
 
-        this.stateHandler = new StateHandler(this);
+		try {
+			configuration = loadConfig();
+		} catch (ConfigurateException e) {
+			getLogger().warn("Failed to load config", e);
+            throw new RuntimeException(e);
+		}
+
+		StateHandler stateHandler = new StateHandler(this);
 
         this.localeManager = new LocaleManager(this, configuration);
         this.moduleManager = new ModuleManager(this, configuration);
@@ -83,10 +85,37 @@ public class NeutronPlugin {
         stateHandler.init();
 
         proxy.getEventManager().register(this, new StateHandler(this));
-        superVanishBridgeHelper = new SuperVanishBridgeHelper(proxy);
+        superVanishBridgeHelper = new VanishBridgeHelper(proxy);
     }
 
-    public SuperVanishBridgeHelper getSuperVanishBridgeHelper() {
+    public ConfigurationNode loadConfig() throws ConfigurateException {
+        return HoconConfigurationLoader.builder()
+                .defaultOptions(opts -> opts.serializers(build -> build.register(Component.class, new ComponentSerializer())))
+                .file(
+						new File(dataFolderPath.toAbsolutePath().toString(), "config.conf")).build().load();
+    }
+
+    public ProxyServer getProxy() {
+        return proxy;
+    }
+
+    public Logger getLogger() {
+        return logger;
+    }
+
+    public Path getDataFolderPath() {
+        return dataFolderPath;
+    }
+
+    public LocaleManager getLocaleManager() {
+        return localeManager;
+    }
+
+    public ModuleManager getModuleManager() {
+        return moduleManager;
+    }
+
+    public VanishBridgeHelper getVanishBridgeHelper() {
         return superVanishBridgeHelper;
     }
 }
