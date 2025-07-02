@@ -5,7 +5,7 @@
   "authors": ["Jim (AnEnragedPigeon)", "Crypnotic"],
   "dependencies": [
     {
-      "id": "supervanishbridge",
+      "id": "vanishbridge",
       "optional": true
     }
   ],
