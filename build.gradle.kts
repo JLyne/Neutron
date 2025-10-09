@@ -8,7 +8,7 @@ description = "An open-source essential suite for the Velocity proxy"
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
+        languageVersion = JavaLanguageVersion.of(25)
     }
 }
 
