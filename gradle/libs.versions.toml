@@ -1,5 +1,5 @@
 [versions]
-velocity = "4.1.0-SNAPSHOT"
+velocity = "4.1.2-SNAPSHOT"
 vanishBridge = "2.0-SNAPSHOT"
 
 [libraries]
